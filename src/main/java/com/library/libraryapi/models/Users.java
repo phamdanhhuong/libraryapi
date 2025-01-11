@@ -25,6 +25,17 @@ public class Users {
 	
 	@Column(name = "phone_number")
 	private Long phoneNumber;
+	
+	@Column(name = "email")
+	private String email;
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -68,21 +79,15 @@ public class Users {
 	
 	public Users() {}
 
-    public Users(String username, String password, String fullName, Long phoneNumber) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-    }
-	
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", phoneNumber=" + phoneNumber +
-                '}';
-    }
+	public Users(Long userId, String username, String password, String fullName, Long phoneNumber, String email) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.password = password;
+		this.fullName = fullName;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+	}
+
+    
 }
