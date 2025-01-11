@@ -37,6 +37,5 @@ public class AuthController {
 		Map<String, String> response = new HashMap<>();
         response.put("message", "Hello, JSON response!");
         return response;
-        
 	}
 }
