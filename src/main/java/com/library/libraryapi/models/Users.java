@@ -1,5 +1,7 @@
 package com.library.libraryapi.models;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,15 @@ public class Users {
 	
 	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive = false;
+
+	@Column(name = "otp")
+	private String otp;
+
+	@Column(name = "otp_expiry")
+	private LocalDateTime otpExpiry;
 
 	public String getEmail() {
 		return email;
@@ -77,16 +88,44 @@ public class Users {
 		this.phoneNumber = phoneNumber;
 	}
 	
+	
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public LocalDateTime getOtpExpiry() {
+		return otpExpiry;
+	}
+
+	public void setOtpExpiry(LocalDateTime otpExpiry) {
+		this.otpExpiry = otpExpiry;
+	}
+
 	public Users() {}
 
-	public Users(Long userId, String username, String password, String fullName, Long phoneNumber, String email) {
-		super();
+	public Users(Long userId, String username, String password, String fullName, Long phoneNumber, String email,
+			boolean isActive, String otp, LocalDateTime otpExpiry) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.fullName = fullName;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+		this.isActive = isActive;
+		this.otp = otp;
+		this.otpExpiry = otpExpiry;
 	}
 
     

@@ -18,7 +18,7 @@ import com.library.libraryapi.services.UsersService;
 public class AuthController {
 	@Autowired
 	private UsersService usersService; 
-	@PostMapping
+	@PostMapping("/register")
 	public Map<String, String> Register(@RequestBody RegisterRequest registerReq){
 		//System.out.println(registerReq.getFull_name());
 		try {
