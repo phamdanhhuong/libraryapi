@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.library.libraryapi.dto.LoginRequest;
 import com.library.libraryapi.dto.OtpRequest;
 import com.library.libraryapi.dto.RegisterRequest;
+import com.library.libraryapi.dto.ResetPassRequest;
 import com.library.libraryapi.services.UsersService;
 
 @RestController
@@ -48,10 +50,23 @@ public class AuthController {
 	    return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping
-	public Map<String, String> Test(){
+	@PostMapping("/send-password-reset-otp")
+	public ResponseEntity<String> sendPasswordResetOtp(@RequestBody Map<String, String> requestBody) {
+	    String response = usersService.sendPasswordResetOtp(requestBody.get("email"));
+	    return ResponseEntity.ok(response);
+	}
+	
+	@PostMapping("/reset-password")
+	public ResponseEntity<String> resetPassword(@RequestBody ResetPassRequest requestBody) {
+	    String response = usersService.resetPassword(requestBody.getEmail(), requestBody.getOtp(), requestBody.getNewPassword());
+	    return ResponseEntity.ok(response);
+	}
+	
+	@PostMapping("/login")
+	public Map<String, String> Login(@RequestBody LoginRequest requestBody){
 		Map<String, String> response = new HashMap<>();
-        response.put("message", "Hello, JSON response!");
+		String message = usersService.Login(requestBody);
+        response.put("message", message);
         return response;
 	}
 }

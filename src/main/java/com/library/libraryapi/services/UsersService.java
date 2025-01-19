@@ -88,26 +88,61 @@ public class UsersService {
 	    return "Invalid or expired OTP.";
 	}
 	
+	public String sendPasswordResetOtp(String email) {
+	    Optional<Users> userOptional = usersRepo.findByEmail(email);
+	    if (userOptional.isEmpty()) {
+	        return "User not found.";
+	    }
+
+	    Users user = userOptional.get();
+	    String otp = generateOtp();
+	    user.setOtp(otp);
+	    user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+	    usersRepo.save(user);
+
+	    String subject = "Password Reset OTP";
+	    String body = "Your OTP for password reset is: " + otp;
+	    emailService.sendOtpEmail(email, subject, body);
+
+	    return "Password reset OTP sent to email.";
+	}
+	
+	public String resetPassword(String email, String otp, String newPassword) {
+	    Optional<Users> userOptional = usersRepo.findByEmail(email);
+	    if (userOptional.isEmpty()) {
+	        return "User not found.";
+	    }
+
+	    Users user = userOptional.get();
+	    if (user.getOtp().equals(otp) && user.getOtpExpiry().isAfter(LocalDateTime.now())) {
+	        user.setPassword(passwordEncoder.encode(newPassword)); // Encrypt password here
+	        user.setOtp(null);
+	        user.setOtpExpiry(null);
+	        usersRepo.save(user);
+	        return "Password reset successfully.";
+	    }
+	    return "Invalid or expired OTP.";
+	}
+	
 	private String generateOtp() {
 	    return String.valueOf(new Random().nextInt(900000) + 100000); 
 	}
 	
-	public Users Login(LoginRequest loginReq) {
-        // Tìm user bằng username hoặc email
+	public String Login(LoginRequest loginReq) {
         Optional<Users> userOpt = usersRepo.findByUsername(loginReq.getUsername())
                                            .or(() -> usersRepo.findByEmail(loginReq.getUsername()));
 
         if (userOpt.isEmpty()) {
-            throw new RuntimeException("User not found");
+            return "User not found";
         }
 
         Users user = userOpt.get();
 
         // Kiểm tra mật khẩu
-        if (!user.getPassword().equals(loginReq.getPassword())) {
-            throw new RuntimeException("Invalid password");
+        if (!passwordEncoder.matches(loginReq.getPassword(), user.getPassword())) {
+            return "Invalid password";
         }
 
-        return user;
+        return "Login sucessful!!!";	
     }
 }
