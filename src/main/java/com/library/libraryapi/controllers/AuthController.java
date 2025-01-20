@@ -65,8 +65,8 @@ public class AuthController {
 	@PostMapping("/login")
 	public Map<String, String> Login(@RequestBody LoginRequest requestBody){
 		Map<String, String> response = new HashMap<>();
-		String message = usersService.Login(requestBody);
-        response.put("message", message);
+		String token = usersService.Login(requestBody);
+        response.put("token", token);
         return response;
 	}
 }

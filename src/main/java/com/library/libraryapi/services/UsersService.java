@@ -14,10 +14,14 @@ import com.library.libraryapi.dto.LoginRequest;
 import com.library.libraryapi.dto.RegisterRequest;
 import com.library.libraryapi.models.Users;
 import com.library.libraryapi.repository.UsersRepository;
+import com.library.libraryapi.utils.JWTutil;
 
 @Service
 public class UsersService {
-
+	
+	@Autowired
+    private JWTutil jwtUtil;
+	
 	@Autowired
 	private UsersRepository usersRepo;
 	
@@ -133,16 +137,17 @@ public class UsersService {
                                            .or(() -> usersRepo.findByEmail(loginReq.getUsername()));
 
         if (userOpt.isEmpty()) {
-            return "User not found";
+            throw new RuntimeException("User not found");
         }
 
         Users user = userOpt.get();
 
+        boolean auth =passwordEncoder.matches(loginReq.getPassword(), user.getPassword());
         // Kiểm tra mật khẩu
-        if (!passwordEncoder.matches(loginReq.getPassword(), user.getPassword())) {
-            return "Invalid password";
+        if (!auth) {
+            throw new RuntimeException("Invalid password");
         }
 
-        return "Login sucessful!!!";	
+        return jwtUtil.generateToken(user.getUsername());	
     }
 }
