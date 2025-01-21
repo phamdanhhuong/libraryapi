@@ -34,8 +34,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                 		.requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
-                		.requestMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
-                		.requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
                         .anyRequest()       
                         .hasRole("USER")
                         ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

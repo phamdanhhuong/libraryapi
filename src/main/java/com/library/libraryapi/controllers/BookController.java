@@ -31,22 +31,4 @@ public class BookController {
             return ResponseEntity.status(404).body("Book not found");
         }
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-        Book updatedBook = bookService.updateBook(id, bookDetails);
-        if (updatedBook != null) {
-            return ResponseEntity.ok(updatedBook);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    @DeleteMapping("/{bookId}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long bookId) {
-        try {
-            bookService.deleteBookById(bookId);
-            return ResponseEntity.ok("Book with ID " + bookId + " has been deleted.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
-    }
 }
