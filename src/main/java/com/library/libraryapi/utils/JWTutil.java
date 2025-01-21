@@ -58,4 +58,18 @@ public class JWTutil {
         SignedJWT signedJWT = SignedJWT.parse(token);
         return signedJWT.getJWTClaimsSet().getSubject();
     }
+    
+    public boolean isTokenExpired(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            Date expirationTime = claims.getExpirationTime();
+
+            return expirationTime.before(new Date());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
 }

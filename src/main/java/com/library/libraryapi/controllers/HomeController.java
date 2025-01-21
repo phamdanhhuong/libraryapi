@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +19,8 @@ public class HomeController {
 	private UsersService usersService;
 	
 	@GetMapping
-	public String welcome() {
-		return "Welcome to library";
+	public String welcome(@RequestAttribute("subject") String subject ) {
+		return "Welcome to library, "+subject;
 	}
 	@GetMapping("/allusers")
 	public List<Users> AllUsers() {

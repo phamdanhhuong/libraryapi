@@ -29,14 +29,13 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = request.getHeader("Authorization");
 
         try {
-			if (token != null && jwtUtil.verifyJwt(token.replace("Bearer ", ""))) {
-			    String subject;
-			    subject = jwtUtil.getSubject(token.replace("Bearer ", ""));
+			if (token != null && jwtUtil.verifyJwt(token.replace("Bearer ", "")) && !jwtUtil.isTokenExpired(token.replace("Bearer ", ""))) {
+				
+			    String subject = jwtUtil.getSubject(token.replace("Bearer ", ""));
 
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(subject, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
-			}else {
-				System.out.println("Invalid token");
+	            request.setAttribute("subject", subject);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
