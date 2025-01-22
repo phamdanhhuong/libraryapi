@@ -15,7 +15,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookId;
+    private Integer bookId;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
@@ -45,11 +45,11 @@ public class Book {
     private int totalQuantity;
 
     // Getters và Setters
-    public Long getBookId() {
+    public Integer getBookId() {
         return bookId;
     }
 
-    public void setBookId(Long bookId) {
+    public void setBookId(Integer  bookId) {
         this.bookId = bookId;
     }
 
@@ -128,7 +128,7 @@ public class Book {
     // Constructors
     public Book() {}
 
-    public Book(Long bookId, String title, String author, String genre, String publisher, LocalDate publicationDate,
+    public Book(Integer bookId, String title, String author, String genre, String publisher, LocalDate publicationDate,
             String summary, String coverUrl, int availableQuantity, int totalQuantity) {
         this.bookId = bookId;
         this.title = title;

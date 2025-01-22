@@ -23,7 +23,7 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<?> getBookById(@PathVariable Long bookId) {
+    public ResponseEntity<?> getBookById(@PathVariable Integer bookId) {
         Optional<Book> book = bookService.getBookById(bookId);
         if (book.isPresent()) {
             return ResponseEntity.ok(book.get());
