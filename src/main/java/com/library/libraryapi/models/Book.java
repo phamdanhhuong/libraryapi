@@ -1,26 +1,19 @@
 package com.library.libraryapi.models;
 
 import java.time.LocalDate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Books")
+@Table(name = "books")
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private Integer bookId;
 
     @Column(name = "title", nullable = false, length = 255)
@@ -38,7 +31,7 @@ public class Book {
     @Column(name = "publication_date")
     private LocalDate publicationDate;
 
-    @Column(name = "summary", columnDefinition = "TEXT")
+    @Column(name = "summary", columnDefinition = "TEXT") 
     private String summary;
 
     @Column(name = "cover_url", length = 255)
@@ -49,5 +42,7 @@ public class Book {
 
     @Column(name = "total_quantity", nullable = false)
     private int totalQuantity;
-
+    
+    @Column(name = "borrowed_count", nullable = false)
+    private int borrowedCount;
 }

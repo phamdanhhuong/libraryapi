@@ -1,92 +1,41 @@
 package com.library.libraryapi.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "Reservations")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "reservations")
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer  reservationId;
+    private Integer reservationId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    @ManyToOne
-    @JoinColumn(name = "bookId", nullable = false)
-    private Book book;
-
-    @Column(name = "reservationDate", nullable = false)
+    @Column(name = "reservation_date", nullable = false)
     private LocalDateTime reservationDate = LocalDateTime.now();
 
-    @Column(name = "expirationDate", nullable = false)
+    @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status  = "ACTIVE";
+    private ReservationStatus status = ReservationStatus.PENDING;
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private List<ReservationBook> reservationBooks; // Thêm danh sách sách
 
-    public Integer  getReservationId() {
-        return reservationId;
-    }
-
-    public void setReservationId(Integer  reservationId) {
-        this.reservationId = reservationId;
-    }
-
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public LocalDateTime getReservationDate() {
-        return reservationDate;
-    }
-
-    public void setReservationDate(LocalDateTime reservationDate) {
-        this.reservationDate = reservationDate;
-    }
-
-    public LocalDateTime getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDateTime expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    // Constructors
-    public Reservation() {}
-
-    public Reservation(Integer  reservationId, Users user, Book book, LocalDateTime reservationDate, LocalDateTime expirationDate, String status) {
-        this.reservationId = reservationId;
-        this.user = user;
-        this.book = book;
-        this.reservationDate = reservationDate;
-        this.expirationDate = expirationDate;
-        this.status = status;
+    public enum ReservationStatus {
+        PENDING, APPROVED, REJECTED, COMPLETED;
     }
 }
