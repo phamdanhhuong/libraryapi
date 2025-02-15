@@ -43,4 +43,8 @@ public class BookController {
     public List<Book> getTopBorrowedBooks() {
         return bookService.getTop10BorrowedBooks();
     }
+    @GetMapping("/recent")
+    public List<Book> getRecentBooks() {
+        return bookService.getRecentBooks();
+    }
 }

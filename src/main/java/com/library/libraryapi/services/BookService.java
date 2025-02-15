@@ -1,5 +1,6 @@
 package com.library.libraryapi.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,8 @@ public class BookService {
     public List<Book> getTop10BorrowedBooks() {
         return bookRepository.findTop10ByOrderByBorrowedCountDesc();
     }
-
+    public List<Book> getRecentBooks() {
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        return bookRepository.findTop10RecentBooks(sevenDaysAgo);
+    }
 }
