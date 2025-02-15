@@ -52,7 +52,6 @@ public class UsersService {
         user.setUsername(registerReq.getUsername());
         user.setPassword(passwordEncoder.encode(registerReq.getPassword()));
         user.setPhoneNumber(registerReq.getPhone_number());
-
 		return  usersRepo.save(user);
 	}
 	
