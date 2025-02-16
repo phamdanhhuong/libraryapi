@@ -34,6 +34,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                 		.requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
+                		.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                		.requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .anyRequest()       
                         .hasRole("USER")
                         ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
