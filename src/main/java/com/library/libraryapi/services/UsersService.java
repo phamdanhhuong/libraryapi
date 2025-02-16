@@ -14,13 +14,12 @@ import com.library.libraryapi.dto.LoginRequest;
 import com.library.libraryapi.dto.RegisterRequest;
 import com.library.libraryapi.models.Users;
 import com.library.libraryapi.repository.UsersRepository;
-import com.library.libraryapi.utils.JWTutil;
 
 @Service
 public class UsersService {
 	
-	@Autowired
-    private JWTutil jwtUtil;
+//	@Autowired
+//    private JWTutil jwtUtil;
 	
 	@Autowired
 	private UsersRepository usersRepo;
@@ -34,25 +33,6 @@ public class UsersService {
 	
 	public List<Users> GetAllUsers() {
 		return usersRepo.findAll();
-	}
-	
-	public Users Register(RegisterRequest registerReq) {
-		
-		if (usersRepo.findByUsername(registerReq.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
-        }
-
-//        if (usersRepo.findByEmail(registerReq.getEmail()).isPresent()) {
-//            throw new RuntimeException("Email already exists");
-//        }
-        
-        Users user = new Users();
-        user.setEmail(registerReq.getEmail());
-        user.setFullName(registerReq.getUsername());
-        user.setUsername(registerReq.getUsername());
-        user.setPassword(passwordEncoder.encode(registerReq.getPassword()));
-        user.setPhoneNumber(registerReq.getPhone_number());
-		return  usersRepo.save(user);
 	}
 	
 	public String sendActivationOtp(String email) {
@@ -131,22 +111,4 @@ public class UsersService {
 	    return String.valueOf(new Random().nextInt(900000) + 100000); 
 	}
 	
-	public String Login(LoginRequest loginReq) {
-        Optional<Users> userOpt = usersRepo.findByUsername(loginReq.getUsername())
-                                           .or(() -> usersRepo.findByEmail(loginReq.getUsername()));
-
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-
-        Users user = userOpt.get();
-
-        boolean auth =passwordEncoder.matches(loginReq.getPassword(), user.getPassword());
-        // Kiểm tra mật khẩu
-        if (!auth) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        return jwtUtil.generateToken(user.getUsername());	
-    }
 }

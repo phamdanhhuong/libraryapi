@@ -71,12 +71,28 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
+		<!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt 
 		<dependency>
 		    <groupId>com.nimbusds</groupId>
 		    <artifactId>nimbus-jose-jwt</artifactId>
 		    <version>10.0.1</version>
 		</dependency>
+		-->
+		 <dependency>
+			 <groupId>io.jsonwebtoken</groupId>
+			 <artifactId>jjwt-api</artifactId>
+			 <version>0.12.6</version>
+		 </dependency>
+		 <dependency>
+			 <groupId>io.jsonwebtoken</groupId>
+			 <artifactId>jjwt-impl</artifactId>
+			 <version>0.12.6</version>
+		 </dependency>
+		 <dependency>
+			 <groupId>io.jsonwebtoken</groupId>
+			 <artifactId>jjwt-jackson</artifactId>
+			 <version>0.12.6</version>
+		 </dependency>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 		    <groupId>org.projectlombok</groupId>

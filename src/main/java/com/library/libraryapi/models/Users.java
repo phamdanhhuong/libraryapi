@@ -1,6 +1,11 @@
 package com.library.libraryapi.models;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="users")
-public class Users {
+public class Users implements UserDetails{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer userId;
@@ -47,5 +52,25 @@ public class Users {
 
 	@Column(name = "otp_expiry")
 	private LocalDateTime otpExpiry;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return List.of();
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
     
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

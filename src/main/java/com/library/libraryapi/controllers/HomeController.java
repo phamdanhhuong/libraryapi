@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.libraryapi.models.Users;
+import com.library.libraryapi.services.JwtService;
 import com.library.libraryapi.services.UsersService;
 
 @RestController
@@ -19,11 +20,11 @@ public class HomeController {
 	private UsersService usersService;
 	
 	@GetMapping
-	public String welcome(@RequestAttribute("subject") String subject ) {
-		return "Welcome to library, "+subject;
+	public String welcome(@RequestAttribute String ten) {
+		return "Welcome to library "+ ten;
 	}
-	@GetMapping("/allusers")
-	public List<Users> AllUsers() {
-		return usersService.GetAllUsers();
-	}
+//	@GetMapping("/allusers")
+//	public List<Users> AllUsers() {
+//		return usersService.GetAllUsers();
+//	}
 }

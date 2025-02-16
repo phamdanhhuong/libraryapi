@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.libraryapi.dto.LoginRequest;
+import com.library.libraryapi.dto.LoginResponse;
 import com.library.libraryapi.dto.OtpRequest;
 import com.library.libraryapi.dto.RegisterRequest;
 import com.library.libraryapi.dto.ResetPassRequest;
+import com.library.libraryapi.models.Users;
+import com.library.libraryapi.services.AuthenticationService;
+import com.library.libraryapi.services.JwtService;
 import com.library.libraryapi.services.UsersService;
 
 @RestController
@@ -23,11 +28,15 @@ import com.library.libraryapi.services.UsersService;
 public class AuthController {
 	@Autowired
 	private UsersService usersService; 
+	@Autowired
+	private AuthenticationService authenticationService;
+	@Autowired
+	private JwtService jwtService;
+	
 	@PostMapping("/register")
 	public Map<String, String> Register(@RequestBody RegisterRequest registerReq){
-		//System.out.println(registerReq.getFull_name());
 		try {
-			usersService.Register(registerReq);
+			authenticationService.Register(registerReq);
 		} catch (Exception e) {
 			Map<String, String> response = new HashMap<>();
 	        response.put("error", e.getMessage());
@@ -62,11 +71,17 @@ public class AuthController {
 	    return ResponseEntity.ok(response);
 	}
 	
+	
 	@PostMapping("/login")
-	public Map<String, String> Login(@RequestBody LoginRequest requestBody){
-		Map<String, String> response = new HashMap<>();
-		String token = usersService.Login(requestBody);
-        response.put("token", token);
-        return response;
+	@Transactional
+	public ResponseEntity<LoginResponse> Login(@RequestBody LoginRequest requestBody){
+		Users authenticatedUser = authenticationService.authenticate(requestBody);
+		String jwtToken = jwtService.generateToken(authenticatedUser);
+		
+		LoginResponse response = new LoginResponse();
+		response.setToken(jwtToken);
+		response.setExpiresIn(jwtService.getExpirationTime());
+		
+        return ResponseEntity.ok(response);
 	}
 }
