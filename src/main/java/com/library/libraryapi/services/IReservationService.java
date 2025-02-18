@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IReservationService {
     String reserveBooks(Integer userId, List<Integer> bookIds, LocalDateTime expirationDate);
-    List<Reservation> getUserReservations(Integer userId);
+    List<Reservation> getReservationsByUser(Integer userId);
 }

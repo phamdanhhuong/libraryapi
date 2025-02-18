@@ -1,53 +1,62 @@
 package com.library.libraryapi.controllers;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.library.libraryapi.dto.ApiResponse;
 import com.library.libraryapi.models.Book;
 import com.library.libraryapi.services.impl.BookServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
 public class BookController {
 
-	private final BookServiceImpl bookService;
+    private final BookServiceImpl bookService;
 
-	public BookController(BookServiceImpl bookService) {
-	    this.bookService = bookService;
-	}
-
+    public BookController(BookServiceImpl bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<?> getBookById(@PathVariable Integer bookId) {
+    public ResponseEntity<ApiResponse> getBookById(@PathVariable Integer bookId) {
         Optional<Book> book = bookService.getBookById(bookId);
         if (book.isPresent()) {
-            return ResponseEntity.ok(book.get());
+            ApiResponse response = new ApiResponse(true, "Book found", book.get());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
-            return ResponseEntity.status(404).body("Book not found");
+            ApiResponse response = new ApiResponse(false, "Book not found", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-    
+
     @GetMapping("/categories")
-    public List<String> getAllGenres() {
-        return bookService.getAllGenres();
+    public ResponseEntity<ApiResponse> getAllGenres() {
+        List<String> genres = bookService.getAllGenres();
+        ApiResponse response = new ApiResponse(true, "Genres fetched successfully", genres);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    
+
     @GetMapping("/categories/{genre}")
-    public List<Book> getBooksByGenre(@PathVariable String genre) {
-        return bookService.getBooksByGenre(genre);
+    public ResponseEntity<ApiResponse> getBooksByGenre(@PathVariable String genre) {
+        List<Book> books = bookService.getBooksByGenre(genre);
+        ApiResponse response = new ApiResponse(true, "Books fetched successfully", books);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
     @GetMapping("/top-borrowed")
-    public List<Book> getTopBorrowedBooks() {
-        return bookService.getTop10BorrowedBooks();
+    public ResponseEntity<ApiResponse> getTopBorrowedBooks() {
+        List<Book> books = bookService.getTop10BorrowedBooks();
+        ApiResponse response = new ApiResponse(true, "Top borrowed books fetched successfully", books);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
     @GetMapping("/recent")
-    public List<Book> getRecentBooks() {
-        return bookService.getRecentBooks();
+    public ResponseEntity<ApiResponse> getRecentBooks() {
+        List<Book> books = bookService.getRecentBooks();
+        ApiResponse response = new ApiResponse(true, "Recent books fetched successfully", books);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -62,7 +62,11 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public List<Reservation> getUserReservations(Integer userId) {
+    public List<Reservation> getReservationsByUser(Integer userId) {
+    	Optional<Users> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found!");
+        }
         return reservationRepository.findByUserUserId(userId);
     }
 }

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private Users user;
 
     @Column(name = "reservation_date", nullable = false)
@@ -33,7 +36,8 @@ public class Reservation {
     private ReservationStatus status = ReservationStatus.PENDING;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<ReservationBook> reservationBooks; // Thêm danh sách sách
+    @JsonIgnore
+    private List<ReservationBook> reservationBooks;
 
     public enum ReservationStatus {
         PENDING, APPROVED, REJECTED, COMPLETED;

@@ -1,7 +1,9 @@
 package com.library.libraryapi.controllers;
 
+import com.library.libraryapi.dto.ApiResponse;
 import com.library.libraryapi.dto.ReservationRequest;
 import com.library.libraryapi.models.Reservation;
+import com.library.libraryapi.models.ReservationBook;
 import com.library.libraryapi.services.IReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,25 +21,29 @@ public class ReservationController {
     }
 
     @PostMapping("/reserve")
-    public ResponseEntity<String> reserveBooks(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<ApiResponse> reserveBooks(@RequestBody ReservationRequest reservationRequest) {
         try {
             String message = reservationService.reserveBooks(
                 reservationRequest.getUserId(),
                 reservationRequest.getBookIds(),
                 reservationRequest.getExpirationDate()
             );
-            return ResponseEntity.ok(message);
+            ApiResponse response = new ApiResponse(true, message, null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            ApiResponse response = new ApiResponse(false, e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserReservations(@PathVariable Integer userId) {
-        List<Reservation> reservations = reservationService.getUserReservations(userId);
+    public ResponseEntity<ApiResponse> getUserReservations(@PathVariable Integer userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUser(userId);
         if (reservations.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No reservations found for user ID " + userId);
+            ApiResponse response = new ApiResponse(false, "No reservations found for user ID " + userId, null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return ResponseEntity.ok(reservations);
+        ApiResponse response = new ApiResponse(true, "Reservations fetched successfully", reservations);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
