@@ -1,8 +1,8 @@
-package com.library.libraryapi.services;
+package com.library.libraryapi.services.impl;
 
 import com.library.libraryapi.models.*;
 import com.library.libraryapi.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.library.libraryapi.services.IBorrowingRecordService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,19 +11,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BorrowingRecordService {
-    @Autowired
-    private BorrowingRecordRepository borrowingRecordRepository;
+public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    private final BorrowingRecordRepository borrowingRecordRepository;
+    private final ReservationRepository reservationRepository;
+    private final ReservationBookRepository reservationBookRepository;
+    private final BookRepository bookRepository;
 
-    @Autowired
-    private ReservationBookRepository reservationBookRepository;
+    public BorrowingRecordServiceImpl(
+            BorrowingRecordRepository borrowingRecordRepository,
+            ReservationRepository reservationRepository,
+            ReservationBookRepository reservationBookRepository,
+            BookRepository bookRepository) {
+        this.borrowingRecordRepository = borrowingRecordRepository;
+        this.reservationRepository = reservationRepository;
+        this.reservationBookRepository = reservationBookRepository;
+        this.bookRepository = bookRepository;
+    }
 
-    @Autowired
-    private BookRepository bookRepository;
-
+    @Override
     public String confirmMultipleBorrowings(Integer reservationId, LocalDateTime dueDate) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
         if (optionalReservation.isEmpty()) {

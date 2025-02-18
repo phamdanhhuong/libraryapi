@@ -1,9 +1,10 @@
-package com.library.libraryapi.services;
+package com.library.libraryapi.services.impl;
 
 import com.library.libraryapi.models.*;
 import com.library.libraryapi.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.library.libraryapi.services.IReservationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,26 +12,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ReservationService {
-    @Autowired
-    private ReservationRepository reservationRepository;
+public class ReservationServiceImpl implements IReservationService {
+    private final ReservationRepository reservationRepository;
+    private final ReservationBookRepository reservationBookRepository;
+    private final BookRepository bookRepository;
+    private final UsersRepository userRepository;
 
-    @Autowired
-    private ReservationBookRepository reservationBookRepository;
+    public ReservationServiceImpl(ReservationRepository reservationRepository,
+                                  ReservationBookRepository reservationBookRepository,
+                                  BookRepository bookRepository,
+                                  UsersRepository userRepository) {
+        this.reservationRepository = reservationRepository;
+        this.reservationBookRepository = reservationBookRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private UsersRepository userRepository;
-
+    @Override
+    @Transactional
     public String reserveBooks(Integer userId, List<Integer> bookIds, LocalDateTime expirationDate) {
         Optional<Users> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            return "User not found!";
+            throw new IllegalArgumentException("User not found!");
         }
 
-        // Tạo một Reservation mới
         Reservation reservation = new Reservation();
         reservation.setUser(user.get());
         reservation.setExpirationDate(expirationDate);
@@ -45,7 +50,6 @@ public class ReservationService {
                 continue;
             }
 
-            // Lưu vào bảng trung gian ReservationBook
             ReservationBook reservationBook = new ReservationBook();
             reservationBook.setReservation(reservation);
             reservationBook.setBook(book.get());
@@ -57,6 +61,7 @@ public class ReservationService {
         return String.join("\n", messages);
     }
 
+    @Override
     public List<Reservation> getUserReservations(Integer userId) {
         return reservationRepository.findByUserUserId(userId);
     }

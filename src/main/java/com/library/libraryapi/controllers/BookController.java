@@ -3,7 +3,6 @@ package com.library.libraryapi.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,14 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.libraryapi.models.Book;
-import com.library.libraryapi.services.BookService;
+import com.library.libraryapi.services.impl.BookServiceImpl;
 
 @RestController
 @RequestMapping("/books")
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
+	private final BookServiceImpl bookService;
+
+	public BookController(BookServiceImpl bookService) {
+	    this.bookService = bookService;
+	}
+
 
     @GetMapping("/{bookId}")
     public ResponseEntity<?> getBookById(@PathVariable Integer bookId) {
