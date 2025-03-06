@@ -53,12 +53,14 @@ public class AuthenticationService {
 //            throw new RuntimeException("Email already exists");
 //        }
         
-        Users user = new Users();
-        user.setEmail(registerReq.getEmail());
-        user.setFullName(registerReq.getUsername());
-        user.setUsername(registerReq.getUsername());
-        user.setPassword(passwordEncoder.encode(registerReq.getPassword()));
-        user.setPhoneNumber(registerReq.getPhone_number());
+        Users user = Users.builder()
+                .email(registerReq.getEmail())
+                .fullName(registerReq.getUsername())
+                .username(registerReq.getUsername())
+                .password(passwordEncoder.encode(registerReq.getPassword()))
+                .phoneNumber(registerReq.getPhone_number())
+                .build();
+        
 		return  usersRepo.save(user);
 	}
 	

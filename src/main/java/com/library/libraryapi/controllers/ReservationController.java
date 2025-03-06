@@ -28,10 +28,18 @@ public class ReservationController {
                 reservationRequest.getBookIds(),
                 reservationRequest.getExpirationDate()
             );
-            ApiResponse response = new ApiResponse(true, message, null);
+            ApiResponse response = ApiResponse.builder()
+    				.message(message)
+    				.status(true)
+    				.data(null)
+    				.build();
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (IllegalArgumentException e) {
-            ApiResponse response = new ApiResponse(false, e.getMessage(), null);
+            ApiResponse response = ApiResponse.builder()
+    				.message(e.getMessage())
+    				.status(false)
+    				.data(null)
+    				.build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
@@ -40,10 +48,18 @@ public class ReservationController {
     public ResponseEntity<ApiResponse> getUserReservations(@PathVariable Integer userId) {
         List<Reservation> reservations = reservationService.getReservationsByUser(userId);
         if (reservations.isEmpty()) {
-            ApiResponse response = new ApiResponse(false, "No reservations found for user ID " + userId, null);
+            ApiResponse response = ApiResponse.builder()
+    				.message("No reservations found for user ID " + userId)
+    				.status(false)
+    				.data(null)
+    				.build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        ApiResponse response = new ApiResponse(true, "Reservations fetched successfully", reservations);
+        ApiResponse response = ApiResponse.builder()
+				.message("Reservations fetched successfully")
+				.status(true)
+				.data(reservations)
+				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -36,10 +36,11 @@ public class ReservationServiceImpl implements IReservationService {
             throw new IllegalArgumentException("User not found!");
         }
 
-        Reservation reservation = new Reservation();
-        reservation.setUser(user.get());
-        reservation.setExpirationDate(expirationDate);
-        reservation.setStatus(Reservation.ReservationStatus.PENDING);
+        Reservation reservation = Reservation.builder()
+                .user(user.get())
+                .expirationDate(expirationDate)
+                .status(Reservation.ReservationStatus.PENDING)
+                .build();
         reservationRepository.save(reservation);
 
         List<String> messages = new ArrayList<>();
@@ -50,9 +51,11 @@ public class ReservationServiceImpl implements IReservationService {
                 continue;
             }
 
-            ReservationBook reservationBook = new ReservationBook();
-            reservationBook.setReservation(reservation);
-            reservationBook.setBook(book.get());
+            ReservationBook reservationBook = new ReservationBook().builder()
+            		.reservation(reservation)
+            		.book(book.get())
+            		.build();
+
             reservationBookRepository.save(reservationBook);
 
             messages.add("Book with ID " + bookId + " reserved successfully.");

@@ -24,7 +24,11 @@ public class BookController {
     public ResponseEntity<ApiResponse> getBookById(@PathVariable Integer bookId) {
         Optional<Book> book = bookService.getBookById(bookId);
         if (book.isPresent()) {
-            ApiResponse response = new ApiResponse(true, "Book found", book.get());
+            ApiResponse response = ApiResponse.builder()
+    				.message("Book found")
+    				.status(true)
+    				.data(book.get())
+    				.build();
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             ApiResponse response = new ApiResponse(false, "Book not found", null);
@@ -35,28 +39,44 @@ public class BookController {
     @GetMapping("/categories")
     public ResponseEntity<ApiResponse> getAllGenres() {
         List<String> genres = bookService.getAllGenres();
-        ApiResponse response = new ApiResponse(true, "Genres fetched successfully", genres);
+        ApiResponse response = ApiResponse.builder()
+				.message("Genres fetched successfully")
+				.status(true)
+				.data(genres)
+				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/categories/{genre}")
     public ResponseEntity<ApiResponse> getBooksByGenre(@PathVariable String genre) {
         List<Book> books = bookService.getBooksByGenre(genre);
-        ApiResponse response = new ApiResponse(true, "Books fetched successfully", books);
+        ApiResponse response = ApiResponse.builder()
+				.message("Books fetched successfully")
+				.status(true)
+				.data(books)
+				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/top-borrowed")
     public ResponseEntity<ApiResponse> getTopBorrowedBooks() {
         List<Book> books = bookService.getTop10BorrowedBooks();
-        ApiResponse response = new ApiResponse(true, "Top borrowed books fetched successfully", books);
+        ApiResponse response = ApiResponse.builder()
+				.message("Top borrowed books fetched successfully")
+				.status(true)
+				.data(books)
+				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/recent")
     public ResponseEntity<ApiResponse> getRecentBooks() {
         List<Book> books = bookService.getRecentBooks();
-        ApiResponse response = new ApiResponse(true, "Recent books fetched successfully", books);
+        ApiResponse response = ApiResponse.builder()
+				.message("Recent books fetched successfully")
+				.status(true)
+				.data(books)
+				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

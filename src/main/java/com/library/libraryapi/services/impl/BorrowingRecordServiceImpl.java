@@ -52,12 +52,13 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
             }
 
             // Tạo Borrowing Record
-            BorrowingRecord borrowingRecord = new BorrowingRecord();
-            borrowingRecord.setUser(reservation.getUser());
-            borrowingRecord.setBook(book);
-            borrowingRecord.setBorrowDate(LocalDateTime.now());
-            borrowingRecord.setDueDate(dueDate);
-            borrowingRecord.setStatus("BORROWED");
+            BorrowingRecord borrowingRecord = BorrowingRecord.builder()
+                    .user(reservation.getUser())
+                    .book(book)
+                    .borrowDate(LocalDateTime.now())
+                    .dueDate(dueDate)
+                    .status("BORROWED")
+                    .build();
 
             borrowingRecordRepository.save(borrowingRecord);
 

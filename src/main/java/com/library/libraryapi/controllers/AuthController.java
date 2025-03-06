@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.library.libraryapi.dto.ApiResponse;
 import com.library.libraryapi.dto.LoginRequest;
 import com.library.libraryapi.dto.LoginResponse;
 import com.library.libraryapi.dto.OtpRequest;
@@ -34,17 +36,23 @@ public class AuthController {
 	private JwtService jwtService;
 	
 	@PostMapping("/register")
-	public Map<String, String> Register(@RequestBody RegisterRequest registerReq){
+	public ResponseEntity<ApiResponse> Register(@RequestBody RegisterRequest registerReq){
 		try {
 			authenticationService.Register(registerReq);
 		} catch (Exception e) {
-			Map<String, String> response = new HashMap<>();
-	        response.put("error", e.getMessage());
-	        return response;
+			ApiResponse response = ApiResponse.builder()
+					.message("Fail to create account !!!")
+					.status(false)
+					.data(null)
+					.build();
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		Map<String, String> response = new HashMap<>();
-        response.put("message", "ok");
-        return response;
+		ApiResponse response = ApiResponse.builder()
+				.message("Register success !!!")
+				.status(true)
+				.data(null)
+				.build();
+        return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping("/send-activation-otp")
@@ -78,9 +86,10 @@ public class AuthController {
 		Users authenticatedUser = authenticationService.authenticate(requestBody);
 		String jwtToken = jwtService.generateToken(authenticatedUser);
 		
-		LoginResponse response = new LoginResponse();
-		response.setToken(jwtToken);
-		response.setExpiresIn(jwtService.getExpirationTime());
+		LoginResponse response = new LoginResponse().builder()
+				.token(jwtToken)
+				.expiresIn(jwtService.getExpirationTime())
+				.build();
 		
         return ResponseEntity.ok(response);
 	}
