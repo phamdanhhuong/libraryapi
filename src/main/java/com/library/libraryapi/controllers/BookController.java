@@ -53,15 +53,20 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(genres);
     }
 
+//    @GetMapping("/categories/{genre}")
+//    public ResponseEntity<ApiResponse> getBooksByGenre(@PathVariable String genre) {
+//        List<Book> books = bookService.getBooksByGenre(genre);
+//        ApiResponse response = ApiResponse.builder()
+//				.message("Books fetched successfully")
+//				.status(true)
+//				.data(books)
+//				.build();
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
     @GetMapping("/categories/{genre}")
-    public ResponseEntity<ApiResponse> getBooksByGenre(@PathVariable String genre) {
+    public ResponseEntity<List<Book>> getBooksByGenre(@PathVariable String genre) {
         List<Book> books = bookService.getBooksByGenre(genre);
-        ApiResponse response = ApiResponse.builder()
-				.message("Books fetched successfully")
-				.status(true)
-				.data(books)
-				.build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     @GetMapping("/top-borrowed")
