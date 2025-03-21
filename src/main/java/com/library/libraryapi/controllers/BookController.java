@@ -37,15 +37,20 @@ public class BookController {
         }
     }
 
+//    @GetMapping("/categories")
+//    public ResponseEntity<ApiResponse> getAllGenres() {
+//        List<Genre> genres = bookService.getAllGenres();
+//        ApiResponse response = ApiResponse.builder()
+//				.message("Genres fetched successfully")
+//				.status(true)
+//				.data(genres)
+//				.build();
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
     @GetMapping("/categories")
-    public ResponseEntity<ApiResponse> getAllGenres() {
+    public ResponseEntity<List<Genre>> getAllGenres() {
         List<Genre> genres = bookService.getAllGenres();
-        ApiResponse response = ApiResponse.builder()
-				.message("Genres fetched successfully")
-				.status(true)
-				.data(genres)
-				.build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(genres);
     }
 
     @GetMapping("/categories/{genre}")
@@ -70,14 +75,19 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+//    @GetMapping("/recent")
+//    public ResponseEntity<ApiResponse> getRecentBooks() {
+//        List<Book> books = bookService.getRecentBooks();
+//        ApiResponse response = ApiResponse.builder()
+//				.message("Recent books fetched successfully")
+//				.status(true)
+//				.data(books)
+//				.build();
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
     @GetMapping("/recent")
-    public ResponseEntity<ApiResponse> getRecentBooks() {
+    public ResponseEntity<List<Book>> getRecentBooks() {
         List<Book> books = bookService.getRecentBooks();
-        ApiResponse response = ApiResponse.builder()
-				.message("Recent books fetched successfully")
-				.status(true)
-				.data(books)
-				.build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 }
