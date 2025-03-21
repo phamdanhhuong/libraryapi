@@ -35,6 +35,14 @@ public class UsersService {
 		return usersRepo.findAll();
 	}
 	
+	public Users GetInfo(String username) {
+		Optional<Users> userOptional = usersRepo.findByUsername(username);
+	    if (userOptional.isEmpty()) {
+	        return null;
+	    }
+	    return userOptional.get();
+	}
+	
 	public String sendActivationOtp(String email) {
 	    Optional<Users> userOptional = usersRepo.findByEmail(email);
 	    if (userOptional.isEmpty()) {
