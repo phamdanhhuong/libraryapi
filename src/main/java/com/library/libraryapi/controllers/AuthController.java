@@ -56,14 +56,24 @@ public class AuthController {
 	}
 	
 	@PostMapping("/send-activation-otp")
-	public ResponseEntity<String> sendActivationOtp(@RequestBody Map<String, String> requestBody ) {
-	    String response = usersService.sendActivationOtp(requestBody.get("email"));
+	public ResponseEntity<ApiResponse> sendActivationOtp(@RequestBody Map<String, String> requestBody ) {
+	    String message = usersService.sendActivationOtp(requestBody.get("email"));
+	    ApiResponse response = ApiResponse.builder()
+				.message(message)
+				.status(true)
+				.data(null)
+				.build();
 	    return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/activate-account")
-	public ResponseEntity<String> activateAccount(@RequestBody OtpRequest requestBody) {
-	    String response = usersService.activateAccount(requestBody.getEmail(), requestBody.getOtp());
+	public ResponseEntity<ApiResponse> activateAccount(@RequestBody OtpRequest requestBody) {
+	    String message = usersService.activateAccount(requestBody.getEmail(), requestBody.getOtp());
+	    ApiResponse response = ApiResponse.builder()
+				.message(message)
+				.status(true)
+				.data(null)
+				.build();
 	    return ResponseEntity.ok(response);
 	}
 	
