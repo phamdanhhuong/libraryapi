@@ -55,7 +55,7 @@ public class AuthenticationService {
         
         Users user = Users.builder()
                 .email(registerReq.getEmail())
-                .fullName(registerReq.getUsername())
+                .fullName(registerReq.getFull_name())
                 .username(registerReq.getUsername())
                 .password(passwordEncoder.encode(registerReq.getPassword()))
                 .phoneNumber(registerReq.getPhone_number())
