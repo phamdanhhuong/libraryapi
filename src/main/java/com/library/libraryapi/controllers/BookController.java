@@ -2,6 +2,7 @@ package com.library.libraryapi.controllers;
 
 import com.library.libraryapi.dto.ApiResponse;
 import com.library.libraryapi.models.Book;
+import com.library.libraryapi.models.Genre;
 import com.library.libraryapi.services.impl.BookServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class BookController {
 
     @GetMapping("/categories")
     public ResponseEntity<ApiResponse> getAllGenres() {
-        List<String> genres = bookService.getAllGenres();
+        List<Genre> genres = bookService.getAllGenres();
         ApiResponse response = ApiResponse.builder()
 				.message("Genres fetched successfully")
 				.status(true)

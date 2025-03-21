@@ -1,7 +1,9 @@
 package com.library.libraryapi.services.impl;
 
 import com.library.libraryapi.models.Book;
+import com.library.libraryapi.models.Genre;
 import com.library.libraryapi.repository.BookRepository;
+import com.library.libraryapi.repository.GenreRepository;
 import com.library.libraryapi.services.IBookService;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements IBookService{
 	private final BookRepository bookRepository;
+	private final GenreRepository genreRepository;
 
-	public BookServiceImpl(BookRepository bookRepository) {
+	public BookServiceImpl(BookRepository bookRepository, GenreRepository genreRepository) {
 	    this.bookRepository = bookRepository;
+	    this.genreRepository = genreRepository;
 	}
 
 
@@ -24,13 +28,15 @@ public class BookServiceImpl implements IBookService{
     }
 
     @Override
-    public List<String> getAllGenres() {
-        return bookRepository.findAllGenres();
+    public List<Genre> getAllGenres() {
+        //return bookRepository.findAllGenres();
+    	return genreRepository.findAll();
     }
 
     @Override
     public List<Book> getBooksByGenre(String genre) {
         return bookRepository.findByGenre(genre);
+    	
     }
 
     @Override
