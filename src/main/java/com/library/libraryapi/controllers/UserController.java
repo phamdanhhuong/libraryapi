@@ -25,6 +25,14 @@ public class UserController {
 		Map<String, String> response =new HashMap<>();
 		response.put("id", user.getUserId().toString());
 		response.put("full_name", user.getFullName());
+		response.put("email", user.getEmail());
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("check-valid")
+	public ResponseEntity<Map<String, Boolean>> CheckValidToken(){
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("isValid", true);
 		return ResponseEntity.ok(response);
 	}
 }
