@@ -95,4 +95,10 @@ public class BookController {
         List<Book> books = bookService.getRecentBooks();
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
+    
+    @GetMapping("/")
+    public ResponseEntity<List<Book>> getAllBooks() {
+        List<Book> books = bookService.getAllBooks();
+        return ResponseEntity.status(HttpStatus.OK).body(books);
+    }
 }

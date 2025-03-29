@@ -10,6 +10,7 @@ public interface IBookService {
     Optional<Book> getBookById(Integer bookId);
     List<Genre> getAllGenres();
     List<Book> getBooksByGenre(String genre);
+    List<Book> getAllBooks();
     List<Book> getTop10BorrowedBooks();
     List<Book> getRecentBooks();
 }

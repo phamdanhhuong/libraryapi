@@ -49,4 +49,10 @@ public class BookServiceImpl implements IBookService{
         LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
         return bookRepository.findTop10RecentBooks(sevenDaysAgo);
     }
+
+
+	@Override
+	public List<Book> getAllBooks() {
+		return bookRepository.findAll();
+	}
 }
