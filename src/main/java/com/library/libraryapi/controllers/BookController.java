@@ -96,7 +96,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
     
-    @GetMapping("/")
+    @GetMapping("/all")
     public ResponseEntity<List<Book>> getAllBooks() {
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.status(HttpStatus.OK).body(books);
