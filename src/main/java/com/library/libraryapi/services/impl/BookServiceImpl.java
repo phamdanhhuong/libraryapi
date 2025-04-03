@@ -38,6 +38,10 @@ public class BookServiceImpl implements IBookService{
         return bookRepository.findByGenre(genre);
     	
     }
+    @Override
+    public List<Book> findBooksByAuthor(String authorName) {
+        return bookRepository.findByAuthorContainingIgnoreCase(authorName);
+    }
 
     @Override
     public List<Book> getTop10BorrowedBooks() {

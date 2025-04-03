@@ -19,4 +19,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     
     @Query("SELECT b FROM Book b WHERE b.publicationDate >= :sevenDaysAgo ORDER BY b.publicationDate DESC LIMIT 10")
     List<Book> findTop10RecentBooks(LocalDate sevenDaysAgo);
+    
+    List<Book> findByAuthorContainingIgnoreCase(String author);
 }

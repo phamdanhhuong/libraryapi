@@ -68,7 +68,13 @@ public class BookController {
         List<Book> books = bookService.getBooksByGenre(genre);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
-
+    
+    @GetMapping("/author/{authorName}")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable String authorName) {
+        List<Book> books = bookService.findBooksByAuthor(authorName);
+        return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(books);
+    }
+    
     @GetMapping("/top-borrowed")
     public ResponseEntity<ApiResponse> getTopBorrowedBooks() {
         List<Book> books = bookService.getTop10BorrowedBooks();
