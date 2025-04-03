@@ -45,4 +45,7 @@ public class Book {
     
     @Column(name = "borrowed_count", nullable = false)
     private int borrowedCount;
+    
+    @Column(name = "rating", nullable = false)
+    private double rating = 0.0;
 }
