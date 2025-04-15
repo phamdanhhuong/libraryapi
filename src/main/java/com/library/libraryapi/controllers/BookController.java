@@ -107,4 +107,8 @@ public class BookController {
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
+    @GetMapping("/search")
+    public List<Book> searchBooks(@RequestParam("query") String query) {
+        return bookService.searchBooks(query);
+    }
 }

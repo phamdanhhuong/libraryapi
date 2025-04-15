@@ -14,5 +14,5 @@ public interface IBookService {
     List<Book> getTop10BorrowedBooks();
     List<Book> getRecentBooks();
     List<Book> findBooksByAuthor(String authorName);
-  
+    List<Book> searchBooks(String query);
 }

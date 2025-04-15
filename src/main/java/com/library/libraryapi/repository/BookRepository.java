@@ -21,4 +21,13 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findTop10RecentBooks(LocalDate sevenDaysAgo);
     
     List<Book> findByAuthorContainingIgnoreCase(String author);
+    
+    List<Book> findByTitleContainingIgnoreCase(String title);
+    
+//    @Query("SELECT b FROM Book b WHERE " +
+//    	       "LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//    	       "LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//    	       "LOWER(b.description) LIKE LOWER(CONCAT('%', :query, '%'))")
+//	List<Book> searchAllFields(String query);
+
 }

@@ -96,7 +96,8 @@ public class AuthController {
 		Users authenticatedUser = authenticationService.authenticate(requestBody);
 		String jwtToken = jwtService.generateToken(authenticatedUser);
 		
-		LoginResponse response = new LoginResponse().builder()
+		new LoginResponse();
+		LoginResponse response = LoginResponse.builder()
 				.token(jwtToken)
 				.expiresIn(jwtService.getExpirationTime())
 				.build();

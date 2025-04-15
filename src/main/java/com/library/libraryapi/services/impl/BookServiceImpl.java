@@ -42,6 +42,11 @@ public class BookServiceImpl implements IBookService{
     public List<Book> findBooksByAuthor(String authorName) {
         return bookRepository.findByAuthorContainingIgnoreCase(authorName);
     }
+    
+    @Override
+    public List<Book> searchBooks(String query) {
+        return bookRepository.findByTitleContainingIgnoreCase(query);
+    }
 
     @Override
     public List<Book> getTop10BorrowedBooks() {
