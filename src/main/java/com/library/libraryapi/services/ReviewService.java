@@ -42,17 +42,24 @@ public class ReviewService {
 
         return reviewRepository.save(review);
     }
-    // Lấy tất cả đánh giá của một cuốn sách
     public List<Review> getReviewsByBookId(Integer bookId) {
         return reviewRepository.findByBook_BookId(bookId);
     }
-    // Lấy tất cả đánh giá của một người dùng
     public List<Review> getReviewsByUserId(Integer userId) {
         return reviewRepository.findByUser_UserId(userId);
     }
-    // Lấy điểm đánh giá trung bình của một cuốn sách
     public Double getAverageRating(Integer bookId) {
         Double averageRating = reviewRepository.findAverageRatingByBookId(bookId);
         return (averageRating != null) ? Math.round(averageRating * 10.0) / 10.0 : 0.0;
     }
+    public void updateBookRating(Book book) {
+        List<Review> reviews = reviewRepository.findByBook(book);
+        double avg = reviews.stream()
+                            .mapToDouble(Review::getRating)
+                            .average()
+                            .orElse(0.0);
+        book.setRating(avg);
+        bookRepository.save(book);
+    }
+
 }

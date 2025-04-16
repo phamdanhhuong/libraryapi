@@ -17,16 +17,16 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;  // Giả sử có một lớp User để đại diện cho người dùng
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;  // Liên kết với bảng Book
+    private Book book; 
 
     @Column(name = "rating", nullable = false)
-    private double rating;  // Số sao đánh giá
+    private double rating;  
 
     @Column(name = "comment", columnDefinition = "TEXT")
-    private String comment;  // Bình luận của người dùng
+    private String comment;  
 
 }

@@ -48,4 +48,8 @@ public class Book {
     
     @Column(name = "rating", nullable = false)
     private double rating = 0.0;
+    
+    @Column(name = "price", nullable = false)
+    private int price;
+
 }

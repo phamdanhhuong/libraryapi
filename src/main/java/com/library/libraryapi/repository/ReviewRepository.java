@@ -1,5 +1,6 @@
 package com.library.libraryapi.repository;
 
+import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.Review;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     // Lấy điểm đánh giá trung bình của một cuốn sách
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.book.bookId = :bookId")
     Double findAverageRatingByBookId(Integer bookId);
+    List<Review> findByBook(Book book);
 }
