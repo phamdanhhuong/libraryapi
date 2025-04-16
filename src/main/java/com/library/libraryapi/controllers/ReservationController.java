@@ -2,6 +2,7 @@ package com.library.libraryapi.controllers;
 
 import com.library.libraryapi.dto.ApiResponse;
 import com.library.libraryapi.dto.ReservationRequest;
+import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.Reservation;
 import com.library.libraryapi.models.ReservationBook;
 import com.library.libraryapi.services.IReservationService;
@@ -62,4 +63,24 @@ public class ReservationController {
 				.build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @GetMapping("/{reservationId}/books")
+    public ResponseEntity<ApiResponse> getBooksByReservationId(@PathVariable Integer reservationId) {
+        try {
+            List<Book> books = reservationService.getBooksByReservationId(reservationId);
+            ApiResponse response = ApiResponse.builder()
+                    .message("Books fetched successfully")
+                    .status(true)
+                    .data(books)
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (IllegalArgumentException e) {
+            ApiResponse response = ApiResponse.builder()
+                    .message(e.getMessage())
+                    .status(false)
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
 }

@@ -72,4 +72,14 @@ public class ReservationServiceImpl implements IReservationService {
         }
         return reservationRepository.findByUserUserId(userId);
     }
+    @Override
+    public List<Book> getBooksByReservationId(Integer reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+            .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        return reservation.getReservationBooks().stream()
+                .map(ReservationBook::getBook)
+                .toList();
+    }
+
 }
