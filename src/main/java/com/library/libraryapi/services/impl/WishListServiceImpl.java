@@ -38,8 +38,11 @@ public class WishListServiceImpl implements IWishListService {
     @Override
     public List<Book> getBooksByUserId(int userId) {
         List<WishList> wishLists = wishListRepository.findByUserUserId(userId);
-        List<WishListBook> wishListBooks = wishListBookRepository.findByWishList(wishLists.get(0));
+        List<WishListBook> wishListBooks = new ArrayList<>();
         List<Book> result = new ArrayList<>();
+        for (int i = 0; i < wishLists.size(); i++) {
+            wishListBooks.add(wishListBookRepository.findByWishList(wishLists.get(i)).get(0));
+        }
         for (int i = 0; i < wishListBooks.size(); i++) {
             result.add(bookRepository.findById(wishListBooks.get(i).getBook().getBookId()).get());
         }
