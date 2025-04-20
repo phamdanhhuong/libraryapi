@@ -9,4 +9,6 @@ import java.util.List;
 public interface WishListRepository extends JpaRepository<WishList, Integer> {
     List<WishList> findByUser(Users user);
     List<WishList> findByUserUserId(Integer userId);
+    @Override
+    void deleteById(Integer integer);
 }

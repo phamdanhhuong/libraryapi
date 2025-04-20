@@ -17,15 +17,21 @@ public class ReservationServiceImpl implements IReservationService {
     private final ReservationBookRepository reservationBookRepository;
     private final BookRepository bookRepository;
     private final UsersRepository userRepository;
+    private final WishListRepository wishListRepository;
+    private final WishListBookRepository wishListBookRepository;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   ReservationBookRepository reservationBookRepository,
                                   BookRepository bookRepository,
-                                  UsersRepository userRepository) {
+                                  UsersRepository userRepository,
+                                  WishListRepository wishListRepository,
+                                  WishListBookRepository wishListBookRepository  ) {
         this.reservationRepository = reservationRepository;
         this.reservationBookRepository = reservationBookRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
+        this.wishListRepository = wishListRepository;
+        this.wishListBookRepository = wishListBookRepository;
     }
 
     @Override
@@ -59,6 +65,15 @@ public class ReservationServiceImpl implements IReservationService {
             reservationBookRepository.save(reservationBook);
 
             messages.add("Book with ID " + bookId + " reserved successfully.");
+        }
+
+        List<WishList> wishLists = wishListRepository.findByUserUserId(userId);
+        List<WishListBook> wishListBooks = wishListBookRepository.findAllByWishListIn(wishLists);
+        for(WishListBook wishListBook : wishListBooks){
+            if(bookIds.contains(wishListBook.getBook().getBookId())){
+                wishListBookRepository.delete(wishListBook);
+                wishListRepository.deleteById(wishListBook.getWishList().getWishListId());
+            }
         }
 
         return String.join("\n", messages);
