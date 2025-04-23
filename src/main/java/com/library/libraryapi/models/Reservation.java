@@ -41,7 +41,13 @@ public class Reservation {
     @JsonIgnore
     private List<ReservationBook> reservationBooks;
 
+    @Transient // Trường này sẽ không được lưu trữ trong cơ sở dữ liệu
+    private Integer bookCount;
+
     public enum ReservationStatus {
         PENDING, APPROVED, REJECTED, COMPLETED;
+    }
+    public Integer getBookCount() {
+        return this.reservationBooks != null ? this.reservationBooks.size() : 0;
     }
 }

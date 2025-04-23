@@ -56,6 +56,9 @@ public class ReservationController {
     				.build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        // Thiết lập bookCount cho mỗi đơn đặt
+        reservations.forEach(reservation -> reservation.setBookCount(reservation.getReservationBooks() != null ? reservation.getReservationBooks().size() : 0));
+
         ApiResponse response = ApiResponse.builder()
 				.message("Reservations fetched successfully")
 				.status(true)

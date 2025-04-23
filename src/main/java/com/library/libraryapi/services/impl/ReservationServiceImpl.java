@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -44,6 +45,7 @@ public class ReservationServiceImpl implements IReservationService {
 
         Reservation reservation = Reservation.builder()
                 .user(user.get())
+                .reservationDate(LocalDateTime.now())
                 .expirationDate(expirationDate)
                 .status(Reservation.ReservationStatus.PENDING)
                 .build();
@@ -94,7 +96,7 @@ public class ReservationServiceImpl implements IReservationService {
 
         return reservation.getReservationBooks().stream()
                 .map(ReservationBook::getBook)
-                .toList();
+                .collect(Collectors.toList());
     }
 
 }
