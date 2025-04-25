@@ -1,6 +1,7 @@
 package com.library.libraryapi.controllers;
 
 import com.library.libraryapi.dto.DueSoonBookResponse;
+import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.BorrowingRecord;
 import com.library.libraryapi.models.Users;
 import com.library.libraryapi.repository.BorrowingRecordRepository;
@@ -44,8 +45,8 @@ public class BorrowingRecordController {
             return ResponseEntity.notFound().build(); // Return 404 if user not found
         }
     }@GetMapping("/user/{userId}/due-soon")
-    public ResponseEntity<DueSoonBookResponse> getDueSoonBooksByUser(@PathVariable Integer userId,
-                                                                     @RequestParam(value = "days", required = false, defaultValue = "3") int days) {
+    public ResponseEntity<List<BorrowingRecord>> getDueSoonBooksByUser(@RequestParam Integer userId,
+                                                              @RequestParam(value = "days", required = false, defaultValue = "3") int days) {
         LocalDate now = LocalDate.now();
         LocalDate dueDateThreshold = now.plusDays(days);
 
@@ -60,8 +61,6 @@ public class BorrowingRecordController {
                         !record.getDueDate().toLocalDate().isBefore(now) &&
                         record.getDueDate().toLocalDate().isBefore(dueDateThreshold))
                 .collect(Collectors.toList());
-        DueSoonBookResponse response = new DueSoonBookResponse();
-        response.setDueSoonBooks(dueSoonBooks);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(dueSoonBooks);
     }
 }

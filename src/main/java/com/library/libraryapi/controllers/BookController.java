@@ -119,15 +119,13 @@ public class BookController {
     }
 
     @GetMapping("/new-in-month")
-    public ResponseEntity<NewBookResponse> getNewBooksInMonth(
+    public ResponseEntity<List<Book>> getNewBooksInMonth(
             @RequestParam(value = "year", required = false) Integer year,
             @RequestParam(value = "month", required = false) Integer month) {
         LocalDate now = LocalDate.now();
         LocalDate startDate = (year == null || month == null) ? now.withDayOfMonth(1) : LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<Book> newBooks = bookRepository.findByPublicationDateBetween(startDate, endDate);
-        NewBookResponse response = new NewBookResponse();
-        response.setNewBooks(newBooks);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(newBooks);
     }
 }
