@@ -17,16 +17,19 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
     private final ReservationRepository reservationRepository;
     private final ReservationBookRepository reservationBookRepository;
     private final BookRepository bookRepository;
+    private final UsersRepository usersRepository;
 
     public BorrowingRecordServiceImpl(
             BorrowingRecordRepository borrowingRecordRepository,
             ReservationRepository reservationRepository,
             ReservationBookRepository reservationBookRepository,
-            BookRepository bookRepository) {
+            BookRepository bookRepository,
+            UsersRepository usersRepository) {
         this.borrowingRecordRepository = borrowingRecordRepository;
         this.reservationRepository = reservationRepository;
         this.reservationBookRepository = reservationBookRepository;
         this.bookRepository = bookRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -75,5 +78,14 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
         reservationRepository.save(reservation);
 
         return messages.isEmpty() ? "All books borrowed successfully." : String.join("\n", messages);
+    }
+    @Override
+    public List<BorrowingRecord> getBorrowingRecordsByUser(Integer userId) {
+        Optional<Users> userOptional = usersRepository.findById(userId); // Use UsersRepository
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("User not found"); // Handle the case where the user doesn't exist
+        }
+        Users user = userOptional.get();
+        return borrowingRecordRepository.findByUser(user);
     }
 }
