@@ -30,7 +30,7 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
     }
 
     @Override
-    public String confirmMultipleBorrowings(Integer reservationId, LocalDateTime dueDate) {
+    public String confirmMultipleBorrowings(Integer reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
         if (optionalReservation.isEmpty()) {
             return "Reservation not found.";
@@ -51,12 +51,14 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
                 continue;
             }
 
+            // Tính toán dueDate dựa trên logic của bạn (ví dụ: 7 ngày kể từ ngày mượn)
+            LocalDateTime calculatedDueDate = LocalDateTime.now().plusDays(7); // Ví dụ: 7 ngày
             // Tạo Borrowing Record
             BorrowingRecord borrowingRecord = BorrowingRecord.builder()
                     .user(reservation.getUser())
                     .book(book)
                     .borrowDate(LocalDateTime.now())
-                    .dueDate(dueDate)
+                    .dueDate(calculatedDueDate)
                     .status("BORROWED")
                     .build();
 

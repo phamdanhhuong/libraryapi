@@ -19,7 +19,6 @@ public class BorrowingRecordController {
     @PostMapping("/confirm")
     public String confirmMultipleBorrowings(@RequestBody Map<String, Object> requestData) {
         Integer reservationId = (Integer) requestData.get("reservationId");
-        LocalDateTime dueDate = LocalDateTime.parse((String) requestData.get("dueDate"));
-        return borrowingRecordService.confirmMultipleBorrowings(reservationId, dueDate);
+        return borrowingRecordService.confirmMultipleBorrowings(reservationId);
     }
 }
