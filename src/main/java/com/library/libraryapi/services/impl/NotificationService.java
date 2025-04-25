@@ -1,14 +1,8 @@
 package com.library.libraryapi.services.impl;
 
 import com.library.libraryapi.enums.NotificationType;
-import com.library.libraryapi.models.Book;
-import com.library.libraryapi.models.BorrowingRecord;
-import com.library.libraryapi.models.Notification;
-import com.library.libraryapi.models.Users;
-import com.library.libraryapi.repository.BookRepository;
-import com.library.libraryapi.repository.BorrowingRecordRepository;
-import com.library.libraryapi.repository.NotificationRepository;
-import com.library.libraryapi.repository.UsersRepository;
+import com.library.libraryapi.models.*;
+import com.library.libraryapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,6 +23,46 @@ public class NotificationService {
     @Autowired
     private UsersRepository userRepository; // Để lấy danh sách tất cả người dùng
 
+    @Autowired
+    private NotificationSendLogRepository notificationSendLogRepository;
+
+    public boolean wasNotificationSentToday(Long userId, String type) {
+        LocalDate today = LocalDate.now();
+        return notificationSendLogRepository.existsByUserIdAndTypeAndSendDate(userId, type, today);
+    }
+
+    public void saveNotificationSendLog(Long userId, String type) {
+        NotificationSendLog log = new NotificationSendLog();
+        log.setUserId(userId);
+        log.setType(type);
+        log.setSendDate(LocalDate.now());
+        notificationSendLogRepository.save(log);
+    }
+    public void createNewBookNotificationForUser(Users user, Book newBook) {
+        if (!wasNotificationSentToday(Long.valueOf(user.getUserId()), NotificationType.NEW_BOOK.name())) {
+            Notification notification = new Notification();
+            notification.setUserId(Long.valueOf(user.getUserId()));
+            notification.setTitle("Sách mới!");
+            notification.setMessage("Cuốn sách '" + newBook.getTitle() + "' vừa được phát hành.");
+            notification.setType(NotificationType.NEW_BOOK.name());
+            notification.setCreatedAt(LocalDateTime.now());
+            notificationRepository.save(notification);
+            saveNotificationSendLog(Long.valueOf(user.getUserId()), NotificationType.NEW_BOOK.name());
+        }
+    }
+
+    public void createDueSoonNotificationForUser(BorrowingRecord record) {
+        if (!wasNotificationSentToday(Long.valueOf(record.getUser().getUserId()), NotificationType.DUE_REMINDER.name())) {
+            Notification notification = new Notification();
+            notification.setUserId(Long.valueOf(record.getUser().getUserId()));
+            notification.setTitle("Sắp đến hạn trả!");
+            notification.setMessage("Sách '" + record.getBook().getTitle() + "' sắp đến hạn.");
+            notification.setType(NotificationType.DUE_REMINDER.name());
+            notification.setCreatedAt(LocalDateTime.now());
+            notificationRepository.save(notification);
+            saveNotificationSendLog(Long.valueOf(record.getUser().getUserId()), NotificationType.DUE_REMINDER.name());
+        }
+    }
     @Scheduled(cron = "0 0 8 * * ?") // Chạy mỗi ngày vào lúc 8:00 sáng
     public void checkNewBooksAndCreateNotifications() {
         LocalDate now = LocalDate.now();
@@ -39,13 +73,16 @@ public class NotificationService {
         if (!newBooks.isEmpty()) {
             List<Users> allUsers = userRepository.findAll(); // Lấy tất cả người dùng
             for (Users user : allUsers) {
-                Notification notification = new Notification();
-                notification.setUserId(Long.valueOf(user.getUserId()));
-                notification.setTitle("Sách mới trong tháng!");
-                notification.setMessage("Có " + newBooks.size() + " sách mới đã được phát hành trong tháng này. Hãy khám phá ngay!");
-                notification.setType(NotificationType.NEW_BOOK.name());
-                notification.setCreatedAt(LocalDateTime.now());
-                notificationRepository.save(notification);
+                if (!wasNotificationSentToday(Long.valueOf(user.getUserId()), NotificationType.NEW_BOOK.name())) {
+                    Notification notification = new Notification();
+                    notification.setUserId(Long.valueOf(user.getUserId()));
+                    notification.setTitle("Sách mới trong tháng!");
+                    notification.setMessage("Có " + newBooks.size() + " sách mới đã được phát hành trong tháng này. Hãy khám phá ngay!");
+                    notification.setType(NotificationType.NEW_BOOK.name());
+                    notification.setCreatedAt(LocalDateTime.now());
+                    notificationRepository.save(notification);
+                    saveNotificationSendLog(Long.valueOf(user.getUserId()), NotificationType.NEW_BOOK.name());
+                }
             }
         }
     }
@@ -62,13 +99,16 @@ public class NotificationService {
                 .collect(Collectors.toList());
 
         for (BorrowingRecord record : overdueSoonRecords) {
-            Notification notification = new Notification();
-            notification.setUserId(Long.valueOf(record.getUser().getUserId()));
-            notification.setTitle("Sách sắp đến hạn trả!");
-            notification.setMessage("Sách '" + record.getBook().getTitle() + "' bạn đang mượn sẽ đến hạn trả vào ngày " + record.getDueDate().toLocalDate() + ".");
-            notification.setType(NotificationType.DUE_REMINDER.name());
-            notification.setCreatedAt(LocalDateTime.now());
-            notificationRepository.save(notification);
+            if (!wasNotificationSentToday(Long.valueOf(record.getUser().getUserId()), NotificationType.DUE_REMINDER.name())) {
+                Notification notification = new Notification();
+                notification.setUserId(Long.valueOf(record.getUser().getUserId()));
+                notification.setTitle("Sách sắp đến hạn trả!");
+                notification.setMessage("Sách '" + record.getBook().getTitle() + "' bạn đang mượn sẽ đến hạn trả vào ngày " + record.getDueDate().toLocalDate() + ".");
+                notification.setType(NotificationType.DUE_REMINDER.name());
+                notification.setCreatedAt(LocalDateTime.now());
+                notificationRepository.save(notification);
+                saveNotificationSendLog(Long.valueOf(record.getUser().getUserId()), NotificationType.DUE_REMINDER.name());
+            }
         }
     }
 }

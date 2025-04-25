@@ -44,7 +44,8 @@ public class BorrowingRecordController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build(); // Return 404 if user not found
         }
-    }@GetMapping("/user/{userId}/due-soon")
+    }
+    @GetMapping("/user/{userId}/due-soon")
     public ResponseEntity<List<BorrowingRecord>> getDueSoonBooksByUser(@RequestParam Integer userId,
                                                               @RequestParam(value = "days", required = false, defaultValue = "3") int days) {
         LocalDate now = LocalDate.now();
