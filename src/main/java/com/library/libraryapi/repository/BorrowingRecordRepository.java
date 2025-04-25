@@ -15,4 +15,5 @@ public interface BorrowingRecordRepository extends JpaRepository<BorrowingRecord
     @Query("SELECT br.book FROM BorrowingRecord br GROUP BY br.book ORDER BY COUNT(br.book) DESC")
     List<Book> findTop10MostBorrowedBooks();
     List<BorrowingRecord> findByUser(Users user);
+    List<BorrowingRecord> findByUserAndReturnDateIsNull(Users user);
 }

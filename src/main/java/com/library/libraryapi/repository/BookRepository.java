@@ -3,6 +3,7 @@ package com.library.libraryapi.repository;
 import com.library.libraryapi.models.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,5 +30,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 //    	       "LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
 //    	       "LOWER(b.description) LIKE LOWER(CONCAT('%', :query, '%'))")
 //	List<Book> searchAllFields(String query);
+
+    @Query("SELECT b FROM Book b WHERE b.publicationDate >= :startDate AND b.publicationDate <= :endDate")
+    List<Book> findByPublicationDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
 }

@@ -1,13 +1,17 @@
 package com.library.libraryapi.controllers;
 
 import com.library.libraryapi.dto.ApiResponse;
+import com.library.libraryapi.dto.NewBookResponse;
 import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.Genre;
+import com.library.libraryapi.repository.BookRepository;
 import com.library.libraryapi.services.impl.BookServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +20,8 @@ import java.util.Optional;
 public class BookController {
 
     private final BookServiceImpl bookService;
+    @Autowired
+    private BookRepository bookRepository;
 
     public BookController(BookServiceImpl bookService) {
         this.bookService = bookService;
@@ -110,5 +116,18 @@ public class BookController {
     @GetMapping("/search")
     public List<Book> searchBooks(@RequestParam("query") String query) {
         return bookService.searchBooks(query);
+    }
+
+    @GetMapping("/new-in-month")
+    public ResponseEntity<NewBookResponse> getNewBooksInMonth(
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "month", required = false) Integer month) {
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = (year == null || month == null) ? now.withDayOfMonth(1) : LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        List<Book> newBooks = bookRepository.findByPublicationDateBetween(startDate, endDate);
+        NewBookResponse response = new NewBookResponse();
+        response.setNewBooks(newBooks);
+        return ResponseEntity.ok(response);
     }
 }
