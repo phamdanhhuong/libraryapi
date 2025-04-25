@@ -78,14 +78,25 @@ public class AuthController {
 	}
 	
 	@PostMapping("/send-password-reset-otp")
-	public ResponseEntity<String> sendPasswordResetOtp(@RequestBody Map<String, String> requestBody) {
-	    String response = usersService.sendPasswordResetOtp(requestBody.get("email"));
+	public ResponseEntity<ApiResponse> sendPasswordResetOtp(@RequestBody Map<String, String> requestBody) {
+//	    String response = usersService.sendPasswordResetOtp(requestBody.get("email"));
+		String message = usersService.sendPasswordResetOtp(requestBody.get("email"));
+		ApiResponse response = ApiResponse.builder()
+				.message(message)
+				.status(true)
+				.data(null)
+				.build();
 	    return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping("/reset-password")
-	public ResponseEntity<String> resetPassword(@RequestBody ResetPassRequest requestBody) {
-	    String response = usersService.resetPassword(requestBody.getEmail(), requestBody.getOtp(), requestBody.getNewPassword());
+	public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPassRequest requestBody) {
+	    String message = usersService.resetPassword(requestBody.getEmail(), requestBody.getOtp(), requestBody.getNewPassword());
+		ApiResponse response = ApiResponse.builder()
+				.message(message)
+				.status(true)
+				.data(null)
+				.build();
 	    return ResponseEntity.ok(response);
 	}
 	
