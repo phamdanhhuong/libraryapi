@@ -1,5 +1,6 @@
 package com.library.libraryapi.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -47,6 +48,12 @@ public class BorrowingRecord {
     @Column(name = "status", nullable = false, length = 20)
     private String status = "BORROWED"; // "BORROWED", "RETURNED", "OVERDUE"
 
+    @Column(name = "renewalCount", nullable = false, columnDefinition = "integer default 0")
+    private Integer renewalCount = 0;
+
+    @Column(name = "penaltyFee", columnDefinition = "decimal(10, 2) default 0.00")
+    private BigDecimal penaltyFee = BigDecimal.ZERO;
+
     // Kiểm tra returnDate hợp lệ
     public void setReturnDate(LocalDateTime returnDate) {
         if (returnDate != null && returnDate.isBefore(this.borrowDate)) {
@@ -54,5 +61,9 @@ public class BorrowingRecord {
         }
         this.returnDate = returnDate;
         this.status = "RETURNED";
+    }
+
+    public void incrementRenewalCount() {
+        this.renewalCount++;
     }
 }

@@ -5,6 +5,8 @@ import com.library.libraryapi.repository.*;
 import com.library.libraryapi.services.IBorrowingRecordService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,5 +89,35 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
         }
         Users user = userOptional.get();
         return borrowingRecordRepository.findByUser(user);
+    }
+    @Override
+    public Optional<BorrowingRecord> getBorrowingRecordById(Integer recordId) {
+        return borrowingRecordRepository.findById(recordId);
+    }
+
+    @Override
+    public String renewBorrowingRecord(BorrowingRecord borrowingRecord, LocalDateTime newDueDate) {
+        LocalDateTime currentDueDate = borrowingRecord.getDueDate();
+        LocalDate currentDueDateLocal = currentDueDate.toLocalDate();
+        LocalDate now = LocalDate.now();
+
+        LocalDateTime finalDueDate = newDueDate;
+        // Kiểm tra nếu gia hạn sau ngày hết hạn thì áp dụng phí phạt
+        if (now.isAfter(currentDueDateLocal)) {
+            // Logic tính phí phạt (ví dụ: dựa trên số ngày trễ)
+            long daysLate = java.time.temporal.ChronoUnit.DAYS.between(currentDueDateLocal, now);
+            double penaltyFee = daysLate * 0.5; // Ví dụ: 0.5 đơn vị tiền tệ mỗi ngày trễ
+            // Cần có một trường 'penaltyFee' trong model BorrowingRecord để lưu trữ giá trị này
+            borrowingRecord.setPenaltyFee(BigDecimal.valueOf(penaltyFee));
+            return "ERROR: Book is overdue. A penalty fee of " + penaltyFee + " will be applied.";
+        }
+
+        borrowingRecord.setDueDate(finalDueDate);
+        try {
+            borrowingRecordRepository.save(borrowingRecord);
+            return "SUCCESS";
+        } catch (Exception e) {
+            return "ERROR: Failed to renew the book due to a database error.";
+        }
     }
 }
