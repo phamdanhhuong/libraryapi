@@ -3,6 +3,7 @@ package com.library.libraryapi.services.impl;
 import com.library.libraryapi.models.*;
 import com.library.libraryapi.repository.*;
 import com.library.libraryapi.services.IBorrowingRecordService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -82,13 +83,23 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
         return messages.isEmpty() ? "All books borrowed successfully." : String.join("\n", messages);
     }
     @Override
+    @Transactional
     public List<BorrowingRecord> getBorrowingRecordsByUser(Integer userId) {
-        Optional<Users> userOptional = usersRepository.findById(userId); // Use UsersRepository
+        Optional<Users> userOptional = usersRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User not found"); // Handle the case where the user doesn't exist
+            throw new IllegalArgumentException("User not found");
         }
         Users user = userOptional.get();
-        return borrowingRecordRepository.findByUser(user);
+        List<BorrowingRecord> borrowingRecords = borrowingRecordRepository.findByUser(user);
+        LocalDateTime now = LocalDateTime.now();
+
+        for (BorrowingRecord record : borrowingRecords) {
+            if (record.getStatus().equals("BORROWED") && record.getDueDate().isBefore(now)) {
+                record.setStatus("OVERDUE");
+                borrowingRecordRepository.save(record);
+            }
+        }
+        return borrowingRecords;
     }
     @Override
     public Optional<BorrowingRecord> getBorrowingRecordById(Integer recordId) {
