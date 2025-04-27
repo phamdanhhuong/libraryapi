@@ -75,25 +75,28 @@ public class BorrowingRecordController {
         Optional<BorrowingRecord> borrowingRecordOptional = borrowingRecordService.getBorrowingRecordById(recordId);
 
         if (borrowingRecordOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseWithNoData(false, "Borrowing record not found."));
+            return ResponseEntity.ok(new ApiResponseWithNoData(false, "Borrowing record not found."));
         }
 
         BorrowingRecord borrowingRecord = borrowingRecordOptional.get();
 
         if (!borrowingRecord.getStatus().equalsIgnoreCase("BORROWED")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseWithNoData(false, "This book cannot be renewed as it is not currently borrowed."));
+            return ResponseEntity.ok(new ApiResponseWithNoData(false, "This book cannot be renewed as it is not currently borrowed."));
         }
-
+        // Kiểm tra số lần gia hạn
+        if (borrowingRecord.getRenewalCount() >= 1) {
+            return ResponseEntity.ok(new ApiResponseWithNoData(false, "This book has already been renewed once and cannot be renewed again."));
+        }
         LocalDateTime currentDueDate = borrowingRecord.getDueDate();
         LocalDate currentDueDateLocal = currentDueDate.toLocalDate();
         LocalDate now = LocalDate.now();
 
         if (renewalDate.isBefore(currentDueDateLocal)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseWithNoData(false, "Renewal date cannot be before the current due date."));
+            return ResponseEntity.ok(new ApiResponseWithNoData(false, "Renewal date cannot be before the current due date."));
         }
 
         if (renewalDate.isAfter(currentDueDateLocal.plusDays(7))) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseWithNoData(false, "Renewal date cannot be more than 7 days after the current due date."));
+            return ResponseEntity.ok(new ApiResponseWithNoData(false, "Renewal date cannot be more than 7 days after the current due date."));
         }
 
         // Gọi service để thực hiện gia hạn

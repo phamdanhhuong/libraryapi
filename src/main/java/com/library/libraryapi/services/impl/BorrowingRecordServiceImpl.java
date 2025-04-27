@@ -104,15 +104,14 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
         LocalDateTime finalDueDate = newDueDate;
         // Kiểm tra nếu gia hạn sau ngày hết hạn thì áp dụng phí phạt
         if (now.isAfter(currentDueDateLocal)) {
-            // Logic tính phí phạt (ví dụ: dựa trên số ngày trễ)
             long daysLate = java.time.temporal.ChronoUnit.DAYS.between(currentDueDateLocal, now);
-            double penaltyFee = daysLate * 0.5; // Ví dụ: 0.5 đơn vị tiền tệ mỗi ngày trễ
-            // Cần có một trường 'penaltyFee' trong model BorrowingRecord để lưu trữ giá trị này
+            double penaltyFee = daysLate * 0.5;
             borrowingRecord.setPenaltyFee(BigDecimal.valueOf(penaltyFee));
             return "ERROR: Book is overdue. A penalty fee of " + penaltyFee + " will be applied.";
         }
 
         borrowingRecord.setDueDate(finalDueDate);
+        borrowingRecord.incrementRenewalCount();
         try {
             borrowingRecordRepository.save(borrowingRecord);
             return "SUCCESS";
