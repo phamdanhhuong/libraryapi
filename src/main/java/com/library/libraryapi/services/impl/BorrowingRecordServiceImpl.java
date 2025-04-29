@@ -66,6 +66,7 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
                     .borrowDate(LocalDateTime.now())
                     .dueDate(calculatedDueDate)
                     .status("BORROWED")
+                    .renewalCount(0)
                     .build();
 
             borrowingRecordRepository.save(borrowingRecord);
