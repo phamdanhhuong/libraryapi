@@ -52,4 +52,10 @@ public class Book {
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Column(name = "audio_url", length = 255)
+    private String audioUrl;
+
+    @Column(name = "audio_duration")
+    private Integer audioDuration;
+
 }
