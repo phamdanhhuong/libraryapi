@@ -3,6 +3,7 @@ package com.library.libraryapi.models;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,6 +54,9 @@ public class Users implements UserDetails{
 	@Column(name = "otp_expiry")
 	private LocalDateTime otpExpiry;
 
+	@Column(name = "avatar_url")
+	private String avatarUrl;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
@@ -72,5 +76,18 @@ public class Users implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public void assignRandomAvatar() {
+		List<String> defaultAvatars = List.of(
+				"https://bopuiwpbccpifydfplgj.supabase.co/storage/v1/object/public/avatars//avatar1.png",
+				"https://bopuiwpbccpifydfplgj.supabase.co/storage/v1/object/public/avatars//avatar2.png",
+				"https://bopuiwpbccpifydfplgj.supabase.co/storage/v1/object/public/avatars//avatar3.png",
+				"https://bopuiwpbccpifydfplgj.supabase.co/storage/v1/object/public/avatars//avatar4.png",
+				"https://bopuiwpbccpifydfplgj.supabase.co/storage/v1/object/public/avatars//avatar5.png"
+		);
+		Random random = new Random();
+		int randomIndex = random.nextInt(defaultAvatars.size());
+		this.avatarUrl = defaultAvatars.get(randomIndex);
 	}
 }

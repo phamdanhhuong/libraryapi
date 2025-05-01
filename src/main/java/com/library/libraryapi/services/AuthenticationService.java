@@ -60,9 +60,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(registerReq.getPassword()))
                 .phoneNumber(registerReq.getPhone_number())
                 .build();
-        
+		user.assignRandomAvatar();
 		return  usersRepo.save(user);
 	}
-	
-	
 }

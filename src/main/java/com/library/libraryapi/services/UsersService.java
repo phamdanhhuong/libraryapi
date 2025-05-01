@@ -118,5 +118,8 @@ public class UsersService {
 	private String generateOtp() {
 	    return String.valueOf(new Random().nextInt(900000) + 100000); 
 	}
-	
+
+	public int getTotalUsers() {
+		return (int) usersRepo.count();
+	}
 }

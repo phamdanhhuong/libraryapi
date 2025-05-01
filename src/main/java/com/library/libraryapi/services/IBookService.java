@@ -15,4 +15,12 @@ public interface IBookService {
     List<Book> getRecentBooks();
     List<Book> findBooksByAuthor(String authorName);
     List<Book> searchBooks(String query);
+
+    List<Book> getNewReleases();
+
+    List<Book> getTopSellingBooks();
+
+    List<Book> getRecommendedBooks();
+
+    List<Book> getFreeBooks();
 }

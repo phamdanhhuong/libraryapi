@@ -26,6 +26,7 @@ public class UserController {
 		response.put("id", user.getUserId().toString());
 		response.put("full_name", user.getFullName());
 		response.put("email", user.getEmail());
+		response.put("avatar", user.getAvatarUrl());
 		return ResponseEntity.ok(response);
 	}
 	
@@ -34,5 +35,10 @@ public class UserController {
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("isValid", true);
 		return ResponseEntity.ok(response);
+	}
+	@GetMapping("/total")
+	public ResponseEntity<Integer> getTotalUsers() {
+		int totalUsers = usersService.getTotalUsers();
+		return ResponseEntity.ok(totalUsers);
 	}
 }

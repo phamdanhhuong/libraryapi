@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
@@ -34,4 +35,20 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     @Query("SELECT b FROM Book b WHERE b.publicationDate >= :startDate AND b.publicationDate <= :endDate")
     List<Book> findByPublicationDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+    @Query("SELECT b FROM BorrowingRecord br JOIN br.book b " +
+            "WHERE br.borrowDate >= :startDate AND br.borrowDate <= :endDate " +
+            "GROUP BY b.bookId ORDER BY COUNT(b.bookId) DESC")
+    List<Book> findTopBorrowedBooksInDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT b.genre, COUNT(b.genre) FROM Book b GROUP BY b.genre ORDER BY COUNT(b.genre) DESC")
+    List<Object[]> findPopularGenres();
+
+    long countByAvailableQuantityGreaterThan(int quantity);
+
+    @Query(value = "SELECT b.* FROM books b JOIN borrowing_records br ON b.book_id = br.book_id GROUP BY b.book_id ORDER BY COUNT(br.book_id) DESC LIMIT 10", nativeQuery = true)
+    List<Book> findTop10BorrowedBooks();
+
+    List<Book> findByPrice(int price);
+
+    List<Book> findByPublicationDateAfter(LocalDate date);
 }

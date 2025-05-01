@@ -1,5 +1,6 @@
 package com.library.libraryapi.services.impl;
 
+import com.library.libraryapi.dto.PopularGenre;
 import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.Genre;
 import com.library.libraryapi.repository.BookRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements IBookService{
@@ -64,4 +66,32 @@ public class BookServiceImpl implements IBookService{
 	public List<Book> getAllBooks() {
 		return bookRepository.findAll();
 	}
+
+    public List<PopularGenre> getPopularGenres() {
+        List<Object[]> results = bookRepository.findPopularGenres();
+        return results.stream()
+                .map(result -> new PopularGenre((String) result[0], ((Long) result[1]).intValue()))
+                .limit(3) // Limit to the top 3
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<Book> getNewReleases() {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(12);
+        return bookRepository.findByPublicationDateAfter(oneMonthAgo);
+    }
+
+    @Override
+    public List<Book> getTopSellingBooks() {
+        return bookRepository.findTop10BorrowedBooks();
+    }
+
+    @Override
+    public List<Book> getRecommendedBooks() {
+        return bookRepository.findAll();
+    }
+
+    @Override
+    public List<Book> getFreeBooks() {
+        return bookRepository.findByPrice(0);
+    }
 }

@@ -1,8 +1,6 @@
 package com.library.libraryapi.controllers;
 
-import com.library.libraryapi.dto.ApiResponse;
-import com.library.libraryapi.dto.AudioUrlResponse;
-import com.library.libraryapi.dto.NewBookResponse;
+import com.library.libraryapi.dto.*;
 import com.library.libraryapi.models.Book;
 import com.library.libraryapi.models.Genre;
 import com.library.libraryapi.repository.BookRepository;
@@ -13,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -215,5 +215,76 @@ public class BookController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(books);
+    }
+    @GetMapping("/top-borrowed/monthly")
+    public ResponseEntity<ApiResponse> getTopBorrowedMonthly(
+            @RequestParam(value = "type", defaultValue = "ebook") String type) {
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay(); // Get the start of the day
+        LocalDateTime endDate = currentMonth.atEndOfMonth().atTime(23, 59, 59);
+
+        List<Book> topBorrowed = bookRepository.findTopBorrowedBooksInDateRange(startDate, endDate).stream()
+                .filter(book -> {
+                    boolean isEbook = type.equalsIgnoreCase("ebook");
+                    boolean isAudiobook = type.equalsIgnoreCase("audiobook");
+                    return (isEbook && (book.getAudioUrl() == null || book.getAudioUrl().isEmpty())) ||
+                            (isAudiobook && (book.getAudioUrl() != null && !book.getAudioUrl().isEmpty()));
+                })
+                .limit(3)
+                .collect(Collectors.toList());
+
+        ApiResponse response = ApiResponse.builder()
+                .message("Top 3 most borrowed " + type + "s for the current month")
+                .status(true)
+                .data(topBorrowed)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/analytics/popular-genres")
+    public ResponseEntity<ApiResponse> getPopularGenresAnalytics() {
+        List<PopularGenre> popularGenres = bookService.getPopularGenres();
+        ApiResponse response = ApiResponse.builder()
+                .status(true)
+                .message("Popular genres fetched successfully")
+                .data(popularGenres)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/analytics/available-total-books")
+    public ResponseEntity<ApiResponse> getAvailableTotalBooks() {
+        long totalBooks = bookRepository.count();
+        long availableBooks = bookRepository.countByAvailableQuantityGreaterThan(0);
+
+        AvailableTotalBooksDTO responseData = new AvailableTotalBooksDTO((int) totalBooks, (int) availableBooks);
+
+        ApiResponse response = ApiResponse.builder()
+                .status(true)
+                .message("Available and total book counts fetched successfully")
+                .data(responseData)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/new-releases")
+    public ResponseEntity<List<Book>> getNewReleases() {
+        List<Book> newReleases = bookService.getNewReleases();
+        return ResponseEntity.ok(newReleases);
+    }
+
+    @GetMapping("/top-selling")
+    public ResponseEntity<List<Book>> getTopSellingBooks() {
+        List<Book> topSelling = bookService.getTopSellingBooks();
+        return ResponseEntity.ok(topSelling);
+    }
+
+    @GetMapping("/recommended")
+    public ResponseEntity<List<Book>> getRecommendedBooks() {
+        List<Book> recommended = bookService.getRecommendedBooks();
+        return ResponseEntity.ok(recommended);
+    }
+
+    @GetMapping("/free")
+    public ResponseEntity<List<Book>> getFreeBooks() {
+        List<Book> freeBooks = bookService.getFreeBooks();
+        return ResponseEntity.ok(freeBooks);
     }
 }
