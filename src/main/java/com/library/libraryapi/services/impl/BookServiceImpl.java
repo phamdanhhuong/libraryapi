@@ -94,4 +94,11 @@ public class BookServiceImpl implements IBookService{
     public List<Book> getFreeBooks() {
         return bookRepository.findByPrice(0);
     }
+    @Override
+    public List<Book> getAllEBooks() {
+        List<Book> allBooks = bookRepository.findAll();
+        return allBooks.stream()
+                .filter(book -> book.getAudioUrl() == null || book.getAudioUrl().isEmpty())
+                .collect(Collectors.toList());
+    }
 }

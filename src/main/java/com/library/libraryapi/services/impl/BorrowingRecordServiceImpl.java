@@ -67,6 +67,7 @@ public class BorrowingRecordServiceImpl implements IBorrowingRecordService {
                     .dueDate(calculatedDueDate)
                     .status("BORROWED")
                     .renewalCount(0)
+                    .penaltyFee(BigDecimal.valueOf(0))
                     .build();
 
             borrowingRecordRepository.save(borrowingRecord);

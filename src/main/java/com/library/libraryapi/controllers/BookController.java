@@ -287,4 +287,14 @@ public class BookController {
         List<Book> freeBooks = bookService.getFreeBooks();
         return ResponseEntity.ok(freeBooks);
     }
+    @GetMapping("/ebooks")
+    public ResponseEntity<ApiResponse> getAllEBooks() {
+        List<Book> eBooks = bookService.getAllEBooks();
+        ApiResponse response = ApiResponse.builder()
+                .message("Ebooks fetched successfully")
+                .status(true)
+                .data(eBooks)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

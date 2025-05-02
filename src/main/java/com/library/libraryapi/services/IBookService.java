@@ -23,4 +23,6 @@ public interface IBookService {
     List<Book> getRecommendedBooks();
 
     List<Book> getFreeBooks();
+
+    List<Book> getAllEBooks();
 }
