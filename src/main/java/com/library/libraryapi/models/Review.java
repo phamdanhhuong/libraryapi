@@ -2,6 +2,9 @@ package com.library.libraryapi.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -27,6 +30,9 @@ public class Review {
     private double rating;  
 
     @Column(name = "comment", columnDefinition = "TEXT")
-    private String comment;  
+    private String comment;
 
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }
