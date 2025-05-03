@@ -98,5 +98,18 @@ public class ReservationServiceImpl implements IReservationService {
                 .map(ReservationBook::getBook)
                 .collect(Collectors.toList());
     }
-
+    @Override
+    public boolean cancelReservation(Integer reservationId) {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+        if (reservationOptional.isPresent()) {
+            Reservation reservation = reservationOptional.get();
+            if (reservation.getStatus() != Reservation.ReservationStatus.CANCELLED &&
+                    reservation.getStatus() != Reservation.ReservationStatus.COMPLETED) {
+                reservation.setStatus(Reservation.ReservationStatus.CANCELLED); // Use the enum constant
+                reservationRepository.save(reservation);
+                return true;
+            }
+        }
+        return false;
+    }
 }

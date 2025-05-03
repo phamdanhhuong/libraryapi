@@ -10,5 +10,5 @@ public interface IReservationService {
     String reserveBooks(Integer userId, List<Integer> bookIds, LocalDateTime expirationDate);
     List<Reservation> getReservationsByUser(Integer userId);
     List<Book> getBooksByReservationId(Integer reservationId);
-
+    boolean cancelReservation(Integer reservationId);
 }

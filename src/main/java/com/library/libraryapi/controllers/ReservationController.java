@@ -85,5 +85,23 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
+    @PostMapping("/cancel/{reservationId}")
+    public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Integer reservationId) {
+        boolean isCancelled = reservationService.cancelReservation(reservationId);
+        if (isCancelled) {
+            ApiResponse response = ApiResponse.builder()
+                    .message("Hủy đặt lịch thành công")
+                    .status(true)
+                    .data(true)
+                    .build();
+            return ResponseEntity.ok(response);
+        } else {
+            ApiResponse response = ApiResponse.builder()
+                    .message("Không thể hủy đặt lịch hoặc không tìm thấy lịch đặt")
+                    .status(false)
+                    .data(false)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 }
