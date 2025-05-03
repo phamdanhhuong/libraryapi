@@ -24,7 +24,7 @@ public class NotificationController {
     private NotificationService notificationService;
     @PostMapping
     public ResponseEntity<Notification> createNotification(@Valid @RequestBody CreateNotificationRequest request) {
-        if (!notificationService.wasNotificationSentToday(request.getUserId(), request.getType())) {
+//        if (!notificationService.wasNotificationSentToday(request.getUserId(), request.getType())) {
             Notification notification = new Notification();
             notification.setUserId(request.getUserId());
             notification.setTitle(request.getTitle());
@@ -36,9 +36,9 @@ public class NotificationController {
             Notification savedNotification = notificationRepository.save(notification);
             notificationService.saveNotificationSendLog(request.getUserId(), notification.getType()); // Lưu và lấy đối tượng đã lưu
             return ResponseEntity.status(HttpStatus.CREATED).body(savedNotification); // Trả về 201 Created với đối tượng Notification
-        }else {
-            return ResponseEntity.status(HttpStatus.OK).body(null); // Hoặc trả về một response khác
-        }
+//        }else {
+//            return ResponseEntity.status(HttpStatus.OK).body(null); // Hoặc trả về một response khác
+//        }
     }
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Notification>> getNotificationsByUser(@PathVariable Long userId) {
