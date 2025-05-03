@@ -87,7 +87,12 @@ public class BookServiceImpl implements IBookService{
 
     @Override
     public List<Book> getRecommendedBooks() {
-        return bookRepository.findAll();
+        LocalDate twelveMonthsAgo = LocalDate.now().minusMonths(12);
+        return bookRepository.findAll().stream()
+                .filter(book -> book.getPublicationDate().isAfter(twelveMonthsAgo))
+                .sorted((b1, b2) -> Integer.compare(b2.getBorrowedCount(), b1.getBorrowedCount()))
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
     @Override

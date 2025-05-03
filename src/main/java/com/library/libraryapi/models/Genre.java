@@ -26,4 +26,13 @@ public class Genre {
 
     @Column(name = "url", length = 255)
     private String url;
+
+    @Column(name = "book_count")
+    private Integer bookCount;
+
+    @Column(name = "ebook_count")
+    private Integer ebookCount;
+
+    @Column(name = "audiobook_count")
+    private Integer audiobookCount;
 }

@@ -20,6 +20,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/books")
 public class BookController {
+    private void updateGenreBookCounts(Genre genre) {
+        List<Book> booksInGenre = bookService.getBooksByGenre(genre.getGenre());
+        genre.setBookCount(booksInGenre.size());
+        long ebookCount = booksInGenre.stream()
+                .filter(book -> book.getAudioUrl() == null || book.getAudioUrl().isEmpty())
+                .count();
+        long audiobookCount = booksInGenre.stream()
+                .filter(book -> book.getAudioUrl() != null && !book.getAudioUrl().isEmpty())
+                .count();
+        genre.setEbookCount((int) ebookCount);
+        genre.setAudiobookCount((int) audiobookCount);
+    }
 
     private final BookServiceImpl bookService;
     @Autowired
@@ -58,6 +70,18 @@ public class BookController {
     @GetMapping("/categories")
     public ResponseEntity<List<Genre>> getAllGenres() {
         List<Genre> genres = bookService.getAllGenres();
+        genres.forEach(genre -> {
+            List<Book> booksInGenre = bookService.getBooksByGenre(genre.getGenre());
+            genre.setBookCount(booksInGenre.size());
+            long ebookCount = booksInGenre.stream()
+                    .filter(book -> book.getAudioUrl() == null || book.getAudioUrl().isEmpty())
+                    .count();
+            long audiobookCount = booksInGenre.stream()
+                    .filter(book -> book.getAudioUrl() != null && !book.getAudioUrl().isEmpty())
+                    .count();
+            genre.setEbookCount((int) ebookCount);
+            genre.setAudiobookCount((int) audiobookCount);
+        });
         return ResponseEntity.status(HttpStatus.OK).body(genres);
     }
 
@@ -181,11 +205,13 @@ public class BookController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/audiobooks/categories")
     public ResponseEntity<List<Genre>> getAudiobookGenres() {
         List<Genre> audiobookGenres = bookService.getAllGenres().stream()
                 .filter(genre -> bookService.getBooksByGenre(genre.getGenre()).stream()
-                        .anyMatch(book -> book.getAudioUrl() != null && !book.getAudioUrl().isEmpty())) // Kiểm tra có sách Audiobook trong thể loại
+                        .anyMatch(book -> book.getAudioUrl() != null && !book.getAudioUrl().isEmpty()))
+                .peek(this::updateGenreBookCounts)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(audiobookGenres);
@@ -195,11 +221,13 @@ public class BookController {
     public ResponseEntity<List<Genre>> getEbookCategories() {
         List<Genre> ebookGenres = bookService.getAllGenres().stream()
                 .filter(genre -> bookService.getBooksByGenre(genre.getGenre()).stream()
-                        .anyMatch(book -> book.getAudioUrl() == null || book.getAudioUrl().isEmpty())) // Kiểm tra có sách Ebook trong thể loại
+                        .anyMatch(book -> book.getAudioUrl() == null || book.getAudioUrl().isEmpty()))
+                .peek(this::updateGenreBookCounts)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(ebookGenres);
     }
+
     @GetMapping("/by-category-and-type")
     public ResponseEntity<List<Book>> getBooksByCategoryAndType(
             @RequestParam String category,
@@ -297,4 +325,5 @@ public class BookController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
 }
