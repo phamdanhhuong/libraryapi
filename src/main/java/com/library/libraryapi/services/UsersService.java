@@ -114,6 +114,34 @@ public class UsersService {
 	    }
 	    return "Invalid or expired OTP.";
 	}
+
+	public Boolean updateInfo(String username, String phoneNumber, String fullName) {
+		Optional<Users> userOptional = usersRepo.findByUsername(username);
+		if (userOptional.isEmpty()) {
+			return false;
+		}
+		Users user = userOptional.get();
+		if(!phoneNumber.isEmpty()){
+			user.setPhoneNumber(Long.parseLong(phoneNumber));
+		}
+		if(!fullName.isEmpty()){
+			user.setFullName(fullName);
+		}
+		usersRepo.save(user);
+		return true;
+	}
+	public Boolean updateAvatar(String url, String username) {
+		Optional<Users> userOptional = usersRepo.findByUsername(username);
+		if (userOptional.isEmpty()) {
+			return false;
+		}
+		Users user = userOptional.get();
+		if(!url.isEmpty()){
+			user.setAvatarUrl(url);
+		}
+		usersRepo.save(user);
+		return true;
+	}
 	
 	private String generateOtp() {
 	    return String.valueOf(new Random().nextInt(900000) + 100000); 
